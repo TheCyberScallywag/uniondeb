@@ -47,8 +47,8 @@ holds under the following conditions.
    and closes the file before handing over its path and SHA-256.
 4. **Encryption at rest.** Relate has none, so extracts live on an **encrypted, per-run volume**: a
    tmpfs (RAM-backed, never on disk) for dev and CI, and a LUKS/dm-crypt or cloud-KMS encrypted
-   ephemeral volume in production. Files are `0600`, owned by the worker user. The TTL reaper
-   (UND-032) deletes them, and each deletion is recorded as provenance. Extracts are never copied to
+   ephemeral volume in production. Files are `0600`, owned by the worker user. The builder's TTL
+   reaper (UND-032) deletes them, and each deletion is recorded as provenance. Extracts are never copied to
    object storage.
 5. **Provenance.** Every extract is an `Extract` entity whose build `Activity` USED the contract
    version and GENERATED the file hash, so a tag can be traced to the extract it was made from.
@@ -62,6 +62,7 @@ than the cap and batching is unacceptable.
 
 ## Consequences
 
-- UND-031 (Echdynnwr builder) implements the pull path, the cap, pseudonymisation and the hash.
-- UND-032 (TTL reaper) owns deletion and the encrypted-volume mount.
+- UND-031 (contract registry) adds `max_records` and the pseudonymisation list to each contract.
+- UND-032 (extract builder) implements the pull path, the cap check, pseudonymisation, the file
+  hash, the encrypted-volume mount, TTL deletion and the fallback backend.
 - Re-run the spike on each Relate minor release, and after the first run against real Aura.
