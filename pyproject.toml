@@ -35,6 +35,7 @@ known-first-party = ["uniondeb"]
 testpaths = ["packages", "tests"]
 addopts = "--import-mode=importlib -q"
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 markers = [
     "integration: needs a running Neo4j Enterprise (deploy/compose.yml); skipped otherwise",
 ]
