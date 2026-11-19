@@ -1,0 +1,47 @@
+# Development stack for Uniondeb. Implements: UND-013
+# Neo4j Enterprise (evaluation licence) stands in for AuraDB Business Critical, so roles,
+# fine-grained privileges and multiple databases behave as they will in Aura.
+#   cp deploy/.env.example deploy/.env && docker compose -f deploy/compose.yml up -d
+#   uv run uniondeb store migrate && uv run uniondeb store migrate --synthetic
+name: uniondeb
+
+services:
+  neo4j:
+    image: neo4j:2026-enterprise
+    restart: unless-stopped
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
+    environment:
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "${NEO4J_ACCEPT_LICENSE_AGREEMENT:?read and accept the Neo4j evaluation licence first}"
+      NEO4J_AUTH: "neo4j/${UNIONDEB_NEO4J_PASSWORD:?set UNIONDEB_NEO4J_PASSWORD in deploy/.env}"
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512M
+      NEO4J_dbms_security_auth__minimum__password__length: "12"
+      NEO4J_initial_dbms_default__database: neo4j
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - ./neo4j/init:/init:ro
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_AUTH#neo4j/}\" 'RETURN 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  neo4j-init:
+    image: neo4j:2026-enterprise
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    environment:
+      UNIONDEB_NEO4J_PASSWORD: "${UNIONDEB_NEO4J_PASSWORD}"
+    volumes:
+      - ./neo4j/init:/init:ro
+    entrypoint: ["sh", "-c", "cypher-shell -a neo4j://neo4j:7687 -u neo4j -p \"$$UNIONDEB_NEO4J_PASSWORD\" -d system -f /init/databases.cypher"]
+    restart: "no"
+
+volumes:
+  neo4j-data:
+  neo4j-logs:
