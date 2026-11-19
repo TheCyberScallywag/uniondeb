@@ -61,7 +61,7 @@ def branch_name(step: dict) -> str:
 def markers(pattern: str, tests: bool) -> dict[str, list[str]]:
     out: dict[str, list[str]] = defaultdict(list)
     rx = re.compile(pattern + r":\s*((?:UND-\d{3}[,\s]*)+)")
-    paths = [*(ROOT / "packages").rglob("*.py"), *(ROOT / "tests").rglob("*.py"), *(ROOT / "scripts").glob("*.py")]
+    paths = [*(ROOT / "packages").rglob("*.py"), *(ROOT / "tests").rglob("*.py"), *(ROOT / "scripts").rglob("*.py")]
     for path in sorted(paths):
         is_test = "tests" in path.relative_to(ROOT).parts
         if is_test != tests:
