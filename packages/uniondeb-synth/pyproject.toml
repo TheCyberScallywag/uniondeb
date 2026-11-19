@@ -1,0 +1,26 @@
+[project]
+name = "uniondeb-synth"
+version = "0.1.0"
+description = "Uniondeb synthetic traffic: roster, normal traffic, misconduct scenarios with ground truth, email stream"
+requires-python = ">=3.14"
+license = "GPL-3.0-or-later"
+dependencies = [
+    "uniondeb-core",
+    "pyarrow>=22",
+]
+
+[project.optional-dependencies]
+kafka = ["confluent-kafka>=2.12"]
+
+[project.entry-points."uniondeb.cli"]
+synth = "uniondeb.synth.cli:register"
+
+[tool.uv.sources]
+uniondeb-core = { workspace = true }
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/uniondeb"]
