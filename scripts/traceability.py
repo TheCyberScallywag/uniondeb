@@ -37,26 +37,25 @@ def git(*args: str) -> str:
     return subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, text=True).stdout
 
 
+MATRIX_SUBJECT = "Update traceability matrix"
+
+
 def commits_by_step() -> dict[str, list[str]]:
+    """Commits reachable from HEAD (deterministic per checkout), excluding matrix-only commits."""
     out: dict[str, list[str]] = defaultdict(list)
-    log = git("log", "--all", "--format=%h%x1f%s%x1f%(trailers:key=Refs,valueonly,separator=%x2C)%x1e")
+    log = git("log", "HEAD", "--format=%h%x1f%s%x1f%(trailers:key=Refs,valueonly,separator=%x2C)%x1e")
     for rec in filter(None, (r.strip() for r in log.split("\x1e"))):
         sha, subject, refs = (rec.split("\x1f") + ["", ""])[:3]
+        if subject.startswith(MATRIX_SUBJECT):
+            continue
         for step in sorted(set(ID.findall(refs))):
-            out[step].append(f"`{sha}` {subject}")
+            out[step].insert(0, f"`{sha}` {subject}")
     return out
 
 
-def branches_by_step() -> dict[str, list[str]]:
-    out: dict[str, list[str]] = defaultdict(list)
-    for b in git("branch", "-a", "--format=%(refname:short)").split():
-        m = re.search(r"und-(\d{3})", b)
-        if m:
-            name = b.removeprefix("origin/")
-            step = f"UND-{m.group(1)}"
-            if name not in out[step]:
-                out[step].append(name)
-    return out
+def branch_name(step: dict) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", step["title"].lower()).strip("-")[:40].strip("-")
+    return f"{step['id'].lower()}-{slug}"
 
 
 def markers(pattern: str, tests: bool) -> dict[str, list[str]]:
@@ -84,7 +83,7 @@ def build() -> str:
         else {}
     )
     repo = backlog["project"]["repo"]
-    commits, branches = commits_by_step(), branches_by_step()
+    commits = commits_by_step()
     code, tests = markers("Implements", tests=False), markers("Verifies", tests=True)
     epics = {e["id"]: e for e in backlog["epics"]}
 
@@ -127,7 +126,8 @@ def build() -> str:
                 return "<br>".join(items) if items else "—"
 
             lines.append(
-                f"| {s['id']} | {s['title']} | {issue(s['id'])} | {status(s)} | {cell(branches.get(s['id'], []))} | "
+                f"| {s['id']} | {s['title']} | {issue(s['id'])} | {status(s)} | "
+                f"{'—' if s.get('owner') == 'human' else '`' + branch_name(s) + '`'} | "
                 f"{cell(commits.get(s['id'], []))} | {cell([f'`{c}`' for c in code.get(s['id'], [])])} | "
                 f"{cell([f'`{t}`' for t in tests.get(s['id'], [])])} |"
             )
@@ -137,7 +137,9 @@ def build() -> str:
 
 def check_trailers(base: str) -> list[str]:
     bad = []
-    for line in git("log", f"{base}..HEAD", "--format=%h%x1f%s%x1f%(trailers:key=Refs,valueonly)").splitlines():
+    for line in git(
+        "log", f"{base}..HEAD", "--format=%h%x1f%s%x1f%(trailers:key=Refs,valueonly,separator=%x2C)"
+    ).splitlines():
         sha, subject, refs = (line.split("\x1f") + ["", ""])[:3]
         if not ID.search(refs):
             bad.append(f"{sha} {subject}")

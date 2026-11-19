@@ -146,7 +146,7 @@ def step_body(s: dict, repo: str, numbers: dict[str, int]) -> str:
     deps = s.get("depends_on", [])
     dep_txt = ", ".join(f"#{numbers[d]} ({d})" if d in numbers else d for d in deps) or "none"
     acc = "\n".join(f"- [ ] {a}" for a in s.get("acceptance", []))
-    slug = re.sub(r"[^a-z0-9]+", "-", s["title"].lower()).strip("-")[:40]
+    slug = re.sub(r"[^a-z0-9]+", "-", s["title"].lower()).strip("-")[:40].strip("-")
     who = "**People task** (governance), not code." if s.get("owner") == "human" else ""
     return f"""**{s["id"]}** · epic {s["epic"]} · priority {s.get("priority")} · size {s.get("size")} · plan {s.get("plan", "")}
 {who}
