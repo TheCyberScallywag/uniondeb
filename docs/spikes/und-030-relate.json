@@ -1,0 +1,28 @@
+{
+  "run": "traffic/run (30 days, 120 employees, 360 externals, seed 1646)",
+  "source": {
+    "records": 55651,
+    "load_s": 128.39,
+    "file_mb": 73.15
+  },
+  "pull": {
+    "rows": 54660,
+    "seconds": 2.245
+  },
+  "extract": {
+    "rows": 54660,
+    "build_s": 5.71,
+    "rows_per_s": 9568,
+    "file_mb": 35.254,
+    "bytes_per_record": 645
+  },
+  "read_only": {
+    "open_ms": 897.0,
+    "aggregate_query_ms": 36.4,
+    "write_refused_with": "OperationalError",
+    "open_rss_growth_mb": 113.9,
+    "top_parties_sample": 5
+  },
+  "file_mode": "0o600",
+  "plaintext_visible": true
+}
