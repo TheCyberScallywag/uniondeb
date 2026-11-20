@@ -15,6 +15,7 @@ dev = [
     "pyyaml>=6",
     "jsonschema>=4.25",
     "pre-commit>=4.3",
+    "relate-db>=1.1",
 ]
 
 [tool.uv.workspace]

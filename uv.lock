@@ -5,6 +5,7 @@ requires-python = ">=3.14"
 [manifest]
 members = [
     "uniondeb-core",
+    "uniondeb-store",
     "uniondeb-synth",
     "uniondeb-workspace",
 ]
@@ -138,6 +139,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa6d1095e7cc5569bebf04342ee146178e2d36600708b/jsonschema_specifications-2025.9.1.tar.gz", hash = "sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d", size = 32855, upload-time = "2025-09-08T01:34:59.186Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl", hash = "sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe", size = 18437, upload-time = "2025-09-08T01:34:57.871Z" },
+]
+
+[[package]]
+name = "neo4j"
+version = "6.4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytz" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/d1/bc40a291c60b06738ce92d5f0259d348eee1f07ba10d569a881c848c8afe/neo4j-6.4.1.tar.gz", hash = "sha256:fac99b7cb9679b93ef97dc23f22a3f0e7c3feb2db223eddfd2521f27005cfeaf", size = 287897, upload-time = "2026-10-15T10:47:26.666Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/69/3036bdcacfba561c6ef4b00fe72529e0a1b6241a6b2de82572a0940a276b/neo4j-6.4.1-py3-none-any.whl", hash = "sha256:f56a281c74355522fc2642df8919bec450115431531b8f3f6fe1cc17acb57a27", size = 390684, upload-time = "2026-10-15T10:47:25.236Z" },
 ]
 
 [[package]]
@@ -365,6 +378,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pytz"
+version = "2026.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f5/b0/168030b0bfcc334cf09fa3313afdb888d892c8a0027324683d1de0ec277e/pytz-2026.6.tar.gz", hash = "sha256:3b0fc2727707663d6e517936f444fd8a8b240f1fc32f4bf7ee03274245945284", size = 318520, upload-time = "2026-10-29T09:05:47.011Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b6/25/564f3fc5b70c1398d706c51f2b1470d0ea0b1b2f96fee67877b6f5bdf3b6/pytz-2026.6-py2.py3-none-any.whl", hash = "sha256:7fed3fee8fd6bd4a2b7b75a8d56021d0624127bf69bd5691f115db929ac570b3", size = 506321, upload-time = "2026-10-29T09:05:45.14Z" },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -401,6 +423,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/22/f5/df4e9027acead3ecc63e50fe1e36aca1523e1719559c499951bb4b53188f/referencing-0.37.0.tar.gz", hash = "sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8", size = 78036, upload-time = "2025-10-13T15:30:48.871Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl", hash = "sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231", size = 26766, upload-time = "2025-10-13T15:30:47.625Z" },
+]
+
+[[package]]
+name = "relate-db"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/d2/1b6179f79a1e5de39039e092cb1dd157c82479e4837ff5d551f943ff55d3/relate_db-1.1.0.tar.gz", hash = "sha256:9a31b061f0adce4f7a0bac0410a33464ec1240a29119a387f525e369b6fa4450", size = 4958509, upload-time = "2026-11-17T15:21:01.213Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/18/a15c967d18263631103c70ac0c596a1f12cef72d7e89e9d9c054ec6d2525/relate_db-1.1.0-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:da05e13b6473fd135f58c7e2c313f42c51bfb77a4a7eedd1f825e3925a24047e", size = 10174597, upload-time = "2026-11-17T15:20:45.978Z" },
+    { url = "https://files.pythonhosted.org/packages/19/26/bb96b72f9cfd95035b146871efbf255cbfcf9c10a6987919d53b1210705d/relate_db-1.1.0-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:7f27dfb11c8e3370b922d261789f2a6048ede07e5fa2c6714657ffbf9b972c37", size = 9458957, upload-time = "2026-11-17T15:20:48.97Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/55/6da947ff50fb1c49dc435ac03cb9b024aa0852b13c79de9f821c1d74eb7d/relate_db-1.1.0-cp39-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:f6b148d540d3ed4812eeb1117a77d9473c1b3b0953a4a726f18cd61d69acb2bf", size = 9932365, upload-time = "2026-11-17T15:20:51.774Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/34/6630f31646b10e02738333f9b72f3534b9bd380ee76df5d4aaad6d05e80e/relate_db-1.1.0-cp39-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:8e4f80a8eb0f6085e53ddd97ad778ee12dfdff620afe8dfd00258f6b5562b612", size = 10495011, upload-time = "2026-11-17T15:20:55.668Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/85/43f5ec2107ccfada458144cbc7d7d83e3075c00a423b7f0905a425ff4edb/relate_db-1.1.0-cp39-abi3-win_amd64.whl", hash = "sha256:f6c7f7634d559fb571103f84e1607ce9dded237a13870b4ef7e532bf9c33327c", size = 10210220, upload-time = "2026-11-17T15:20:58.589Z" },
 ]
 
 [[package]]
@@ -531,6 +566,30 @@ requires-dist = [
 ]
 
 [[package]]
+name = "uniondeb-store"
+version = "0.1.0"
+source = { editable = "packages/uniondeb-store" }
+dependencies = [
+    { name = "neo4j" },
+    { name = "pydantic" },
+    { name = "uniondeb-core" },
+]
+
+[package.optional-dependencies]
+relate = [
+    { name = "relate-db" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "neo4j", specifier = ">=6.4" },
+    { name = "pydantic", specifier = ">=2.12" },
+    { name = "relate-db", marker = "extra == 'relate'", specifier = ">=1.1" },
+    { name = "uniondeb-core", editable = "packages/uniondeb-core" },
+]
+provides-extras = ["relate"]
+
+[[package]]
 name = "uniondeb-synth"
 version = "0.1.0"
 source = { editable = "packages/uniondeb-synth" }
@@ -564,6 +623,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pyyaml" },
+    { name = "relate-db" },
     { name = "ruff" },
 ]
 
@@ -576,6 +636,7 @@ dev = [
     { name = "pytest", specifier = ">=8.4" },
     { name = "pytest-asyncio", specifier = ">=1.2" },
     { name = "pyyaml", specifier = ">=6" },
+    { name = "relate-db", specifier = ">=1.1" },
     { name = "ruff", specifier = ">=0.14" },
 ]
 
