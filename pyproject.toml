@@ -1,0 +1,40 @@
+[project]
+name = "uniondeb-workspace"
+version = "0.1.0"
+description = "Uniondeb — agentic conduct-assurance platform for CyberScallywags UK (uv workspace root)"
+readme = "README.md"
+requires-python = ">=3.14"
+license = "GPL-3.0-or-later"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "pytest-asyncio>=1.2",
+    "ruff>=0.14",
+    "pyyaml>=6",
+    "jsonschema>=4.25",
+    "pre-commit>=4.3",
+]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF100"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["uniondeb"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages", "tests"]
+addopts = "--import-mode=importlib -q"
+asyncio_mode = "auto"
+markers = [
+    "integration: needs a running Neo4j Enterprise (deploy/compose.yml); skipped otherwise",
+]

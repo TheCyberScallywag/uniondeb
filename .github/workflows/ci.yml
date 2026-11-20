@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      neo4j:
+        image: neo4j:2026-enterprise
+        env:
+          NEO4J_AUTH: neo4j/uniondeb-ci-password
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: eval
+        ports: ["7687:7687"]
+        options: >-
+          --health-cmd "cypher-shell -u neo4j -p uniondeb-ci-password 'RETURN 1'"
+          --health-interval 10s --health-timeout 10s --health-retries 30
+    env:
+      UNIONDEB_NEO4J_URI: neo4j://localhost:7687
+      UNIONDEB_NEO4J_USER: neo4j
+      UNIONDEB_NEO4J_PASSWORD: uniondeb-ci-password
+      UNIONDEB_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 0 }
+      - uses: astral-sh/setup-uv@v7
+        with: { python-version: "3.14" }
+      - run: uv sync --all-packages --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run pytest
+      - name: traceability (matrix current, every commit refs a step)
+        run: uv run scripts/traceability.py --check --base origin/${{ github.base_ref || 'main' }}

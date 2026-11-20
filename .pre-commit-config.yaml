@@ -1,0 +1,15 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.4
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: refs-trailer
+        name: commit message carries a "Refs: UND-NNN" trailer
+        language: pygrep
+        entry: '^Refs: UND-\d{3}'
+        args: [--negate]
+        stages: [commit-msg]
