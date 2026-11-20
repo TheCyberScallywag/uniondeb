@@ -18,7 +18,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args, extra = parser.parse_known_args(argv)
+    if extra and not getattr(args, "passthrough", False):
+        parser.error(f"unrecognized arguments: {' '.join(extra)}")
+    args.extra = extra  # subcommands that wrap their own parser set passthrough=True
     return int(args.func(args) or 0)
 
 
