@@ -15,6 +15,7 @@ relate = ["relate-db>=1.1"]
 
 [project.entry-points."uniondeb.cli"]
 store = "uniondeb.store.cli:register"
+load = "uniondeb.store.load:register"
 
 [tool.uv.sources]
 uniondeb-core = { workspace = true }

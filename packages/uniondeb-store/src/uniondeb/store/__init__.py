@@ -4,11 +4,15 @@ Implements: UND-013
 """
 
 from uniondeb.store.migrations import Migration, MigrationDriftError, load_migrations, migrate, status
+from uniondeb.store.provenance import Lineage, ProvenanceError, Tarddiad
 from uniondeb.store.runner import CypherRunner, Neo4jRunner, RelateRunner, open_runner
 from uniondeb.store.settings import StoreSettings
 
 __all__ = [
     "CypherRunner",
+    "Lineage",
+    "ProvenanceError",
+    "Tarddiad",
     "Migration",
     "MigrationDriftError",
     "Neo4jRunner",
