@@ -137,8 +137,9 @@ def build() -> str:
 
 def check_trailers(base: str) -> list[str]:
     bad = []
+    # --no-merges: on a pull request CI checks out GitHub's own merge commit, which no one wrote.
     for line in git(
-        "log", f"{base}..HEAD", "--format=%h%x1f%s%x1f%(trailers:key=Refs,valueonly,separator=%x2C)"
+        "log", "--no-merges", f"{base}..HEAD", "--format=%h%x1f%s%x1f%(trailers:key=Refs,valueonly,separator=%x2C)"
     ).splitlines():
         sha, subject, refs = (line.split("\x1f") + ["", ""])[:3]
         if not ID.search(refs):
