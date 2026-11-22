@@ -1,0 +1,37 @@
+[project]
+name = "uniondeb-evals"
+version = "0.1.0"
+description = "Arholwr: pydantic-evals suites from synthetic ground truth, CI gate and online evals"
+requires-python = ">=3.14"
+license = "GPL-3.0-or-later"
+dependencies = [
+    "uniondeb-core",
+    "uniondeb-store",
+    "uniondeb-synth",
+    "uniondeb-extract",
+    "uniondeb-agents",
+    "uniondeb-cases",
+    "uniondeb-mail",
+    "uniondeb-worker",
+    "pydantic-evals>=2.71",
+]
+
+[project.entry-points."uniondeb.cli"]
+evals = "uniondeb.evals.cli:register"
+
+[tool.uv.sources]
+uniondeb-core = { workspace = true }
+uniondeb-store = { workspace = true }
+uniondeb-synth = { workspace = true }
+uniondeb-extract = { workspace = true }
+uniondeb-agents = { workspace = true }
+uniondeb-cases = { workspace = true }
+uniondeb-mail = { workspace = true }
+uniondeb-worker = { workspace = true }
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/uniondeb"]
