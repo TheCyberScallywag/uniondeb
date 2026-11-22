@@ -46,6 +46,8 @@ def _out(value: Any) -> Any:
         return {"$datetime": value.isoformat()}
     if hasattr(value, "iso_format"):  # the Neo4j driver's own temporal types
         return {"$datetime": value.iso_format()}
+    if hasattr(value, "to_native") and hasattr(value, "text"):  # Relate's Temporal: nanoseconds or a zone name
+        return {"$datetime": value.text}
     if isinstance(value, list):
         return [_out(v) for v in value]
     return value
