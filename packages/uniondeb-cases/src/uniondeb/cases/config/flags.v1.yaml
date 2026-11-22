@@ -1,0 +1,55 @@
+# Controlled flags vocabulary for Ymchwiliad (plan §7.3). Free text belongs in case notes.
+# Change this by adding a new versioned file, not by editing labels in place: every Flag node
+# records the vocabulary version it was set under.
+version: "1"
+flags:
+  # Person flags: restricted, visible only inside the case.
+  - label: under_investigation
+    kind: person
+    restricted: true
+    description: The person is the subject of, or material to, an open investigation.
+  - label: insider_list_breach_suspected
+    kind: person
+    restricted: true
+    description: Suspected communication in breach of an insider list.
+  - label: safeguarding_concern
+    kind: person
+    restricted: true
+    description: A welfare or safeguarding concern about the person.
+  - label: false_positive_pattern
+    kind: person
+    restricted: true
+    description: The pattern that raised this person has an innocent explanation.
+
+  # Device and identifier flags: hypotheses for Gwyliwr, never facts.
+  - label: suspected_burner
+    kind: device
+    hypothesis: true
+    description: The device or identifier looks like a short-lived, unregistered one.
+  - label: controlled_by
+    kind: device
+    hypothesis: true
+    param: person
+    description: The device or identifier is believed to be controlled by the named person.
+  - label: shared_device
+    kind: device
+    hypothesis: true
+    description: More than one person appears to use the device.
+
+  # Case flags: part of the case, so never shown outside it.
+  - label: legal_hold
+    kind: case
+    restricted: true
+    description: Suspends retention purges for everything in the case.
+  - label: sar_submitted
+    kind: case
+    restricted: true
+    description: A Suspicious Activity Report was submitted for the case.
+  - label: referred_to_police
+    kind: case
+    restricted: true
+    description: The case was referred to the police (mock route).
+  - label: closed_no_action
+    kind: case
+    restricted: true
+    description: The case was closed with no further action.
