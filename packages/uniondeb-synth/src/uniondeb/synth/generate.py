@@ -8,6 +8,7 @@ Output (everything is SYNTHETIC; see README.SYNTHETIC.txt in the run folder):
   data/normal/<dataset>/date=YYYY-MM-DD/part-NNNN.{jsonl,csv,parquet}   background traffic
   data/insider_dealing/<dataset>/…                                     scenario records only
   data/drug_trafficking/<dataset>/…                                    scenario records only
+  data/adversarial/messages/…                                          tagger-defeating fixtures
      (--blend writes scenario records into the normal partitions instead)
   roster/people.csv, roster/devices.jsonl                              who owns which identifiers
   config/triggers.txt, config/code_of_ethics.DRAFT.md                  inputs for the tagging agents
@@ -16,7 +17,7 @@ Output (everything is SYNTHETIC; see README.SYNTHETIC.txt in the run folder):
   ground_truth/scenarios.json      actors, timeline and hidden links per scenario
   manifest.json                    every file with sha256, rows, format, dialect (provenance seed)
 
-Implements: UND-012
+Implements: UND-012, UND-043
 """
 
 import argparse
@@ -32,7 +33,7 @@ from uniondeb.core.schemas import SCHEMA_VERSION
 
 from . import content as C
 from .directory import Directory
-from .scenarios import Labelled, NormalConfig, drug_trafficking, insider_dealing, normal_day
+from .scenarios import Labelled, NormalConfig, adversarial, drug_trafficking, insider_dealing, normal_day
 from .writer import Sink, WriteOptions
 
 SYNTHETIC_NOTICE = """THIS FOLDER CONTAINS SYNTHETIC TEST DATA.
@@ -61,7 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rows-per-file", type=int, default=5000)
     p.add_argument("--messy-share", type=float, default=0.3, help="share of files in a source-system dialect")
     p.add_argument("--error-rate", type=float, default=0.002, help="share of normal rows with an injected fault")
-    p.add_argument("--scenarios", default="insider_dealing,drug_trafficking")
+    p.add_argument("--scenarios", default="insider_dealing,drug_trafficking,adversarial")
     p.add_argument("--blend", action="store_true", help="mix scenario records into the normal partitions")
     return p
 
@@ -90,9 +91,14 @@ def main(argv: list[str] | None = None) -> dict:
     if "drug_trafficking" in wanted:
         used = {v["person_id"] for r in results for v in r.actors.values() if isinstance(v, dict) and "person_id" in v}
         results.append(drug_trafficking(rng, d, a.start, a.days, exclude=used))
+    if "adversarial" in wanted:
+        actors = {r["person_id"] for r in d.roster_rows()} & set(_actor_ids(results))
+        results.append(adversarial(d, a.start, a.days, a.seed, exclude=actors))
 
     scenario_by_day: dict[str, dict[str, list[Labelled]]] = defaultdict(lambda: defaultdict(list))
     for res in results:
+        if res.name == "adversarial":
+            continue  # written last, so the files of every other scenario are unchanged by it
         for rec in res.records:
             scenario_by_day[rec.at.date().isoformat()][rec.dataset].append(rec)
 
@@ -127,6 +133,15 @@ def main(argv: list[str] | None = None) -> dict:
                 sink.write_partition(scn, ds_name, key, rs)
                 counts[scn] += len(rs)
 
+    late: dict[str, list[Labelled]] = defaultdict(list)
+    for res in results:
+        if res.name == "adversarial":
+            for rec in res.records:
+                late[rec.at.date().isoformat()].append(rec)
+    for key, recs in sorted(late.items()):
+        sink.write_partition("adversarial", "messages", key, recs)
+        counts["adversarial"] += len(recs)
+
     _write_side_files(a, d, sink, results)
     summary = {
         "run": a.out.name,
@@ -148,6 +163,25 @@ def main(argv: list[str] | None = None) -> dict:
     (a.out / "manifest.json").write_text(json.dumps({**summary, "files": sink.manifest}, indent=1) + "\n")
     print(json.dumps(summary, indent=1))
     return summary
+
+
+def _actor_ids(results) -> list[str]:
+    """Every roster id named anywhere in the scenarios' actors, so fixtures never reuse a scenario actor."""
+    found: list[str] = []
+
+    def walk(v) -> None:
+        if isinstance(v, dict):
+            for x in v.values():
+                walk(x)
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+        elif isinstance(v, str):
+            found.append(v)
+
+    for r in results:
+        walk(r.actors)
+    return found
 
 
 def _tally(rows: list[dict], key: str) -> dict[str, int]:

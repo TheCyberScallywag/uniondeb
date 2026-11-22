@@ -8,7 +8,7 @@ no single record states, such as which employee controls a burner phone.
 Traffic always involves at least one CyberScallywags employee, because that is the
 only traffic an organisation could legitimately hold.
 
-Implements: UND-012
+Implements: UND-012, UND-043
 """
 
 import math
@@ -697,4 +697,34 @@ def drug_trafficking(
             "evidence": "new-number broadcast to same customers",
         },
     ]
+    return res
+
+
+# ───────────────────────────── adversarial fixtures ─────────────────────────────────
+def adversarial(d: Directory, start: date, days: int, seed: int, exclude: set[str] | None = None) -> ScenarioResult:
+    """Labelled messages written to defeat a tagger (see ``content.ADVERSARIAL``). They pass between
+    external contacts only, so they test tagging without changing any employee's concern volume.
+    The scenario draws from its own generator, so adding it leaves every other record unchanged."""
+    rng = random.Random(seed + 43)
+    res = ScenarioResult("adversarial")
+    mobiles = [p for p in d.external_list if _devices(d, p, DeviceType.MOBILE)]
+    pool = [p for p in mobiles if p.person_id not in (exclude or set())]
+    if len(pool) < 2:  # a small roster: every external is already a scenario actor
+        pool = mobiles
+    if len(pool) < 2:
+        return res
+    for n, (key, t) in enumerate(C.ADVERSARIAL.items()):
+        for rep in range(3):
+            a, b = rng.sample(pool, 2)
+            day = start + timedelta(days=(n + rep * 3) % max(days, 1))
+            body = C.render(t, company=COMPANY, ticker=TICKER, project=PROJECT)
+            event = message(
+                rng,
+                _devices(d, a, DeviceType.MOBILE)[0],
+                _devices(d, b, DeviceType.MOBILE)[0],
+                _at(day, rng.randint(8, 22), rng.randrange(60), rng.randrange(60)),
+                body,
+            )
+            res.records.append(Labelled(event, "messages", res.name, t.tag, t.clauses, t.typology, (), key))
+    res.actors = {"fixtures": sorted(C.ADVERSARIAL), "note": "between external contacts only"}
     return res
