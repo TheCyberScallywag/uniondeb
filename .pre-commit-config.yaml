@@ -8,7 +8,7 @@ repos:
   - repo: local
     hooks:
       - id: refs-trailer
-        name: commit message carries a "Refs: UND-NNN" trailer
+        name: 'commit message carries a "Refs: UND-NNN" trailer'
         language: pygrep
         entry: '^Refs: UND-\d{3}'
         args: [--negate]
