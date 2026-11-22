@@ -1,0 +1,11 @@
+# DRAFT placeholder. The retention schedule is a governance decision (UND-006, plan §2 G10), set with
+# the DPIA. Replace these periods through a reviewed change before any real data is processed.
+# After `content_days` a record's content is removed and its metadata, tags and provenance are kept.
+version: draft-0
+status: draft
+content_days:
+  clean: 30
+  question: 180
+  dirty: 2190      # six years, pending legal advice
+  untagged: 30
+ingest_error_raw_days: 90
