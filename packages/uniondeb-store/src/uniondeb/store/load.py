@@ -142,6 +142,7 @@ def to_graph_rows(dataset: str, event: BaseModel) -> dict[str, Any]:
     if dataset == "email":
         props["journal_source"] = dump["journal"]["source"]
     links: list[tuple[str, dict[str, Any]]] = []
+    sender_name: str | None = None
     addresses: list[tuple[str, str]] = []
     attachments: list[dict[str, Any]] = []
     match event:
@@ -155,6 +156,7 @@ def to_graph_rows(dataset: str, event: BaseModel) -> dict[str, Any]:
             if event.device is not None:
                 links = [("SENT_FROM", _device(event.device))]
             addresses = [("FROM", event.sender.address)]
+            sender_name = event.sender.name
             addresses += [("TO", a.address) for a in (*event.to, *event.cc, *event.bcc)]
             attachments = [a.model_dump(mode="json") for a in event.attachments]
     return {
@@ -163,6 +165,7 @@ def to_graph_rows(dataset: str, event: BaseModel) -> dict[str, Any]:
         "props": props,
         "links": links,
         "addresses": addresses,
+        "sender_name": sender_name,
         "attachments": attachments,
     }
 
@@ -205,8 +208,15 @@ async def write_batch(runner: CypherRunner, rows: list[dict[str, Any]], activity
     for rel, pairs in addr_by_rel.items():
         await runner.run(
             f"UNWIND $pairs AS p MATCH (r:Record {{key: p.key}}) MERGE (a:EmailAddress {{address: p.address}}) "
-            f"MERGE (r)-[:{rel}]->(a)",
+            f"ON CREATE SET a.domain = split(p.address, '@')[1] MERGE (r)-[:{rel}]->(a)",
             {"pairs": pairs},
+        )
+    senders = {r["addresses"][0][1]: r["sender_name"] for r in rows if r.get("sender_name") and r["addresses"]}
+    if senders:  # a mailbox belongs to the person named on it; journaling only carries company senders
+        await runner.run(
+            "UNWIND $senders AS s MATCH (a:EmailAddress {address: s.address}) "
+            "MERGE (p:Person {id: 'owner:' + s.name}) ON CREATE SET p.name = s.name MERGE (a)-[:BELONGS_TO]->(p)",
+            {"senders": [{"address": a, "name": n} for a, n in senders.items()]},
         )
     atts = [{"key": r["key"], **a} for r in rows for a in r["attachments"]]
     if atts:
@@ -216,6 +226,30 @@ async def write_batch(runner: CypherRunner, rows: list[dict[str, Any]], activity
             "MERGE (r)-[:ATTACHED {filename: a.filename}]->(x)",
             {"atts": atts},
         )
+
+
+async def load_roster(runner: CypherRunner, people_csv: Path) -> int:
+    """Roster facts the security scans and conflict checks need: who is an employee, in which team."""
+    with people_csv.open(newline="", encoding="utf-8") as fh:
+        people = [
+            {
+                "name": p["name"],
+                "props": {
+                    "person_id": p["person_id"],
+                    "kind": p["kind"],
+                    "team": p.get("team") or None,
+                    "role": p.get("role") or None,
+                    "insider_list": str(p.get("insider_list")).lower() == "true",
+                    "manager_id": p.get("manager_id") or None,
+                },
+            }
+            for p in csv.DictReader(fh)
+        ]
+    await runner.run(
+        "UNWIND $people AS p MERGE (n:Person {id: 'owner:' + p.name}) SET n.name = p.name, n += p.props",
+        {"people": people},
+    )
+    return len(people)
 
 
 # ───────────────────────────── the run ──────────────────────────────────────────────
@@ -233,6 +267,8 @@ async def load_run(runner: CypherRunner, run_dir: Path, settings: StoreSettings)
         raise SyntheticIsolationError("only synthetic runs are loaded this way; real data goes through Porthor")
     tarddiad = Tarddiad(runner)
     run_name = manifest.get("run") or run_dir.name
+    if (run_dir / "roster" / "people.csv").exists():
+        await load_roster(runner, run_dir / "roster" / "people.csv")
     results = []
     for entry in manifest["files"]:
         path = run_dir / entry["path"]

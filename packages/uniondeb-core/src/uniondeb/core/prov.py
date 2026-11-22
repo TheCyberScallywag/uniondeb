@@ -33,6 +33,16 @@ KEY_PROPERTIES: dict[str, str] = {
     "Flag": "id",
     "SarDraft": "id",
     "SarSubmission": "id",
+    "IngestError": "id",
+    "MappingProposal": "id",
+    "AliasRegistry": "id",
+    "ExtractContract": "hash",
+    "TriggerList": "version",
+    "Case": "id",
+    "CaseNote": "id",
+    "AuditEvent": "id",
+    "EvalReport": "id",
+    "Scan": "id",
 }
 ROOT_LABELS = frozenset({"SourceFile", "Email", "Attachment"})  # where lineage ends: hashed inputs
 
@@ -50,6 +60,10 @@ class ActivityKind(StrEnum):
     INVESTIGATE = "Investigate"
     SAR = "Sar"
     MIGRATE = "Migrate"
+    MAPPING = "Mapping"
+    RETENTION = "Retention"
+    EXPIRE = "Expire"
+    EVAL = "Eval"
 
 
 class EntityRef(BaseModel):

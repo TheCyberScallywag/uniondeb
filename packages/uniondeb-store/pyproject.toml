@@ -8,6 +8,7 @@ dependencies = [
     "uniondeb-core",
     "neo4j>=6.4",
     "pydantic>=2.12",
+    "cryptography>=46",
 ]
 
 [project.optional-dependencies]

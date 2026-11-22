@@ -144,7 +144,7 @@ class Tarddiad:
                     "ORDER BY activity.started_at",
                     {"key": ent.key},
                 )
-                if not rows and ent.label in ROOT_LABELS and ent not in sources:
+                if ent.label in ROOT_LABELS and ent not in sources:  # a hashed input, however it arrived
                     sources.append(ent)
                 for row in rows:
                     used = [r for u in row["used"] if (r := _ref(u)) is not None]
