@@ -1,0 +1,33 @@
+[project]
+name = "uniondeb-worker"
+version = "0.1.0"
+description = "Uniondeb worker: job queue, consumers, scheduler and retention jobs"
+requires-python = ">=3.14"
+license = "GPL-3.0-or-later"
+dependencies = [
+    "uniondeb-core",
+    "uniondeb-store",
+    "uniondeb-extract",
+    "uniondeb-agents",
+    "uniondeb-cases",
+    "uniondeb-mail",
+    "pyyaml>=6",
+]
+
+[project.entry-points."uniondeb.cli"]
+worker = "uniondeb.worker.cli:register"
+
+[tool.uv.sources]
+uniondeb-core = { workspace = true }
+uniondeb-store = { workspace = true }
+uniondeb-extract = { workspace = true }
+uniondeb-agents = { workspace = true }
+uniondeb-cases = { workspace = true }
+uniondeb-mail = { workspace = true }
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/uniondeb"]
