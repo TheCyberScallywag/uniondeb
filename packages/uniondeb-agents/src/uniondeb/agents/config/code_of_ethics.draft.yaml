@@ -1,0 +1,10 @@
+# DRAFT placeholder. Replace with the adopted code of ethics (governance step UND-002) before any
+# real data is tagged. Clause ids are stable: tags and SARs cite them.
+version: draft-0
+status: draft
+clauses:
+  CE1: Act lawfully; never take part in, facilitate or conceal criminal activity.
+  CE2: Protect confidential and non-public information, including client and market-sensitive information; never use it, or pass it on, for personal gain.
+  CE3: Use CyberScallywags devices, accounts, premises and events only for legitimate purposes.
+  CE4: Be honest and keep accurate records; never destroy or hide records to avoid scrutiny.
+  CE5: Treat people with respect and keep members, especially young people, safe.
