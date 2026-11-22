@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Uniondeb{% endblock %}</title>
+<style>
+:root { --ink:#1c2430; --muted:#5b6675; --line:#d5dbe3; --bg:#f6f7f9; --card:#fff; --accent:#1f5f8b; --warn:#9a3412; --q:#8a6100; --d:#9b1c1c; --c:#256d3f; }
+@media (prefers-color-scheme: dark) { :root { --ink:#e6e9ee; --muted:#9aa5b4; --line:#333c48; --bg:#14181e; --card:#1c222b; --accent:#7db7de; --warn:#f0a67a; --q:#e0b34d; --d:#f08a8a; --c:#7fcf9a; } }
+* { box-sizing: border-box; }
+body { margin:0; font:15px/1.5 system-ui, sans-serif; color:var(--ink); background:var(--bg); }
+header { display:flex; gap:1rem; align-items:baseline; padding:.7rem 1rem; border-bottom:1px solid var(--line); background:var(--card); flex-wrap:wrap; }
+header a { color:var(--accent); text-decoration:none; } header strong { margin-right:auto; }
+main { max-width:72rem; margin:0 auto; padding:1rem; }
+section { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:1rem; margin:0 0 1rem; overflow-x:auto; }
+h1 { font-size:1.3rem; margin:.2rem 0 1rem; } h2 { font-size:1.05rem; margin:0 0 .6rem; }
+table { border-collapse:collapse; width:100%; } th, td { text-align:left; padding:.35rem .6rem; border-bottom:1px solid var(--line); vertical-align:top; }
+th { color:var(--muted); font-weight:600; font-size:.85rem; }
+.muted { color:var(--muted); } .error { color:var(--warn); border:1px solid var(--warn); padding:.5rem .8rem; border-radius:6px; margin-bottom:1rem; }
+.tag { display:inline-block; padding:0 .45rem; border-radius:3px; border:1px solid currentColor; font-size:.8rem; }
+.tag.question { color:var(--q); } .tag.dirty { color:var(--d); } .tag.clean { color:var(--c); } .tag.untagged { color:var(--muted); }
+input, select, textarea, button { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:.35rem .5rem; max-width:100%; }
+textarea { width:100%; min-height:4.5rem; } button { background:var(--accent); color:var(--card); border-color:var(--accent); cursor:pointer; }
+form.inline { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin:.4rem 0; }
+pre { white-space:pre-wrap; word-break:break-word; margin:.3rem 0; font-size:.85rem; } blockquote { margin:.3rem 0; padding-left:.8rem; border-left:3px solid var(--line); }
+</style>
+</head>
+<body>
+<header>
+  <strong>Uniondeb</strong>
+  {% if principal %}
+    {% if principal.roles | select("in", ["reviewer", "compliance_lead"]) | list %}<a href="/console">Review console</a>{% endif %}
+    {% if principal.roles | select("in", ["investigator", "nominated_officer", "case_admin"]) | list %}<a href="/portal">Ymchwiliad</a>{% endif %}
+    <span class="muted">{{ principal.sub }} · {{ principal.roles | sort | join(", ") }}</span> <a href="/logout">Sign out</a>
+  {% endif %}
+</header>
+<main>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+{% block main %}{% endblock %}
+</main>
+</body>
+</html>

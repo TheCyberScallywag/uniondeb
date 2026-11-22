@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Review console{% endblock %}
+{% block main %}
+<h1>Review console</h1>
+<section>
+  <h2>Queues</h2>
+  <p class="muted">{{ notification }}</p>
+  <table><tr><th>Queue</th><th>Open</th><th>Oldest</th></tr>
+  {% for q in queues %}<tr><td><a href="/console?kind={{ q.kind }}">{{ q.kind }}</a></td><td>{{ q.open }}</td><td>{{ q.oldest[:16] }}</td></tr>
+  {% else %}<tr><td colspan="3" class="muted">Nothing is waiting.</td></tr>{% endfor %}
+  </table>
+</section>
+<section>
+  <h2>{{ kind or "All open items" }}</h2>
+  <table><tr><th>Item</th><th>Queue</th><th>State</th><th>Summary</th><th>Decisions</th></tr>
+  {% for i in items %}<tr><td><a href="/console/items/{{ i.id }}">{{ i.id[-8:] }}</a></td><td>{{ i.kind }}</td><td>{{ i.state }}{% if i.four_eyes %} · four-eyes{% endif %}</td><td>{{ i.summary }}</td><td>{{ i.decisions | length }}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted">No open items.</td></tr>{% endfor %}
+  </table>
+</section>
+{% endblock %}

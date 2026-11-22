@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Sign in</h1>
+<section>
+{% if dev %}
+  <p class="muted">Development sign-in. Paste a token minted with <code>uniondeb api token</code>.</p>
+  <form method="post" action="/login"><textarea name="token" aria-label="Token" required></textarea><p><button>Sign in</button></p></form>
+{% else %}
+  <p>Sign in through your organisation's single sign-on. If you reached this page from a bookmark, start again from the sign-on portal.</p>
+{% endif %}
+</section>
+{% endblock %}

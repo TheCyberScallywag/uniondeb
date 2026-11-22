@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Evidence pack{% endblock %}
+{% block main %}
+<h1>Evidence pack v{{ pack.version }} <span class="muted">{{ pack.subject_pseudonym }} · {{ pack.window_from[:10] }} to {{ pack.window_to[:10] }}</span></h1>
+<section><h2>Summary</h2><p>{{ pack.summary }}</p><p class="muted">This pack makes no recommendation. The decision is yours.</p></section>
+<section><h2>Innocent explanations to consider</h2><ul>{% for a in pack.alternative_explanations %}<li>{{ a }}</li>{% endfor %}</ul></section>
+<section><h2>Timeline</h2>
+<table><tr><th>When</th><th>Record</th><th>Tag</th><th>Clauses</th><th>Evidence</th><th>Text</th><th>Source file</th></tr>
+{% for e in pack.timeline %}<tr><td>{{ e.at[:16] }}</td><td>{{ e.record }}</td><td><span class="tag {{ e.proposed or e.tag }}">{{ e.proposed or e.tag }}</span>{% if e.proposed %} proposed{% endif %}</td><td>{{ e.clauses | join(", ") }}</td><td>{{ e.evidence_span or (e.trigger_hits | join(", ")) }}</td><td><pre>{{ e.text or "" }}</pre></td><td class="muted">{{ (e.source_sha256 or "")[:12] }}</td></tr>{% endfor %}
+</table></section>
+{% endblock %}

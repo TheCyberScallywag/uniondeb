@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Review item{% endblock %}
+{% block main %}
+<h1>{{ item.kind }} <span class="muted">{{ item.id[-8:] }} · {{ item.state }}{% if item.four_eyes %} · needs two reviewers{% endif %}</span></h1>
+<section><h2>Summary</h2><p>{{ item.summary }}</p></section>
+{% if item.record %}
+<section>
+  <h2>Record</h2>
+  <p class="muted">{{ item.record.dataset }} · {{ item.record.medium }} · {{ item.record.occurred_at }}{% if item.record.direction %} · {{ item.record.direction }}{% endif %}</p>
+  <p class="muted">{% for p in item.record.parties %}{{ p.role }}: {{ p.party }} ({{ p.device }}){% if not loop.last %} · {% endif %}{% endfor %}</p>
+  {% for k, v in item.record.text.items() %}<blockquote><span class="muted">{{ k }}</span><pre>{{ v }}</pre></blockquote>{% endfor %}
+  {% if item.record.content_purged %}<p class="muted">Content removed under the retention schedule.</p>{% endif %}
+  <table><tr><th>Tag</th><th>By</th><th>Method</th><th>Triggers</th><th>Clauses</th><th>Evidence</th><th>When</th></tr>
+  {% for t in item.record.tags %}<tr><td><span class="tag {{ t.label }}">{{ t.label }}</span>{% if t.proposed %} proposed{% elif t.current %} current{% endif %}</td><td>{{ t.created_by }}</td><td>{{ t.method }}{% if t.model %} · {{ t.model }}{% endif %}</td><td>{{ (t.trigger_hits or []) | join(", ") }}</td><td>{{ (t.clauses or []) | join(", ") }}</td><td>{{ t.evidence_span or "" }}</td><td>{{ t.created_at[:16] }}</td></tr>{% endfor %}
+  </table>
+</section>
+{% endif %}
+{% if item.error %}
+<section><h2>Ingest error</h2><p>Row {{ item.error.row }} of a {{ item.error.dataset }} file: {{ item.error.reason }}</p>
+  {% if item.error.raw_row is not none %}<pre>{{ item.error.raw_row | pretty }}</pre>{% endif %}
+  <pre class="muted">{{ item.error.report | pretty }}</pre></section>
+{% endif %}
+{% if item.alert %}
+<section><h2>Alert for {{ item.alert.subject_pseudonym }}</h2>
+  <p>{{ item.alert.explanation }}</p>
+  <p class="muted">{{ item.alert.patterns | join(", ") }} · score {{ item.alert.score }} · {{ item.alert.window_from[:10] }} to {{ item.alert.window_to[:10] }} · {{ item.alert.records }} contributing records</p>
+  <pre>{{ item.alert.metrics | pretty }}</pre>
+  {% if item.alert.hypotheses %}<p class="muted">Hypotheses to test, not findings:</p><pre>{{ item.alert.hypotheses | pretty }}</pre>{% endif %}
+  <form class="inline" method="post" action="/console/items/{{ item.id }}/pack"><button>Build evidence pack</button>
+  {% for p in item.case_packs %}<a href="/console/packs/{{ p.id }}">pack v{{ p.version }}</a>{% endfor %}</form>
+</section>
+{% endif %}
+{% if item.kind == "mapping_proposal" %}<section><h2>Proposed mapping</h2><pre>{{ item.payload | pretty }}</pre></section>{% endif %}
+<section><h2>Decisions so far</h2>
+  <table><tr><th>Reviewer</th><th>Decision</th><th>Rationale</th><th>When</th></tr>
+  {% for d in item.decisions %}<tr><td>{{ d.reviewer }}</td><td>{{ d.decision }}</td><td>{{ d.rationale }}</td><td>{{ d.at[:16] }}</td></tr>
+  {% else %}<tr><td colspan="4" class="muted">None yet.</td></tr>{% endfor %}</table>
+</section>
+{% if item.state in ["open", "awaiting_second", "disputed", "needs_info"] %}
+<section><h2>Your decision</h2>
+  <form method="post" action="/console/items/{{ item.id }}">
+    <p><label>Decision <select name="decision" required>{% for o in item.options %}<option>{{ o }}</option>{% endfor %}</select></label></p>
+    <p><label>Rationale (required)<textarea name="rationale" required></textarea></label></p>
+    {% if item.kind in ["ingest_error", "mail_dlq"] %}<p><label>Corrected row as JSON (for fix_resubmit)<textarea name="fixed_row">{% if item.error and item.error.raw_row is not none %}{{ item.error.raw_row | pretty }}{% endif %}</textarea></label></p>{% endif %}
+    <button>Record decision</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}
