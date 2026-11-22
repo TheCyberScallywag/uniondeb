@@ -83,6 +83,9 @@ INGEST_NODES = (
     "Email",
     "EmailAddress",
     "Attachment",
+    "IngestError",
+    "MappingProposal",
+    "AliasRegistry",
 )
 INGEST_RELS = (
     "CONTAINED",
@@ -97,10 +100,12 @@ INGEST_RELS = (
     "SENT_FROM",
     "BELONGS_TO",
     "ATTACHED",
+    "HAD_ERROR",
+    "FOR",
 )
 PROVENANCE_RELS = ("USED", "GENERATED", "WAS_ASSOCIATED_WITH")
 CASE_NODES = ("Case", "Flag", "CaseNote", "SarDraft", "SarSubmission")
-RECORD_META = ("key", "dataset", "schema_version", "channel", "direction", "occurred_at")
+RECORD_META = ("key", "dataset", "schema_version", "channel", "network", "action", "direction", "occurred_at")
 
 ROLES: tuple[Role, ...] = (
     Role(
@@ -123,10 +128,14 @@ ROLES: tuple[Role, ...] = (
             grant("ACCESS"),
             grant("TRAVERSE", "Record", "SourceFile"),
             grant("READ", "Record", props=("key",)),
-            grant("MATCH", "Tag", "ReviewItem", "Alert", "CasePack", "Activity", "SoftwareAgent"),
-            grant("CREATE", "Tag", "ReviewItem", "Alert", "CasePack", "Activity"),
-            grant("SET PROPERTY", "Tag", "ReviewItem", "Alert", "CasePack", "Activity"),
-            grant("CREATE", "ON", "ABOUT", "SUPERSEDES", *PROVENANCE_RELS, segment="RELATIONSHIPS"),
+            grant(
+                "MATCH", "Tag", "ReviewItem", "Alert", "CasePack", "Activity", "SoftwareAgent", "Scan", "TriggerList"
+            ),
+            grant("MATCH", "Extract", "IngestError", "MappingProposal"),
+            grant("CREATE", "Tag", "ReviewItem", "Alert", "CasePack", "Activity", "Scan", "TriggerList"),
+            grant("SET PROPERTY", "Tag", "ReviewItem", "Alert", "CasePack", "Activity", "Scan", "TriggerList"),
+            grant("TRAVERSE", "Person", "Device", "Attachment"),
+            grant("CREATE", "ON", "ABOUT", "SUPERSEDES", "SUGGESTS", *PROVENANCE_RELS, segment="RELATIONSHIPS"),
             deny("SET PROPERTY", "Record", "SourceFile", "Device", "Identifier", "Person"),
             deny("DELETE"),
         ),
@@ -151,10 +160,10 @@ ROLES: tuple[Role, ...] = (
         "Gwyliwr scans: counts and topology, never content",
         (
             grant("ACCESS"),
-            grant("MATCH", "Record", "Tag", "Person", "Device", "SourceFile"),
+            grant("MATCH", "Record", "Tag", "Person", "Device", "SourceFile", "EmailAddress", "Attachment"),
             grant("TRAVERSE", segment="RELATIONSHIPS"),
             deny("READ", "Record", "Email", props=CONTENT_PROPERTIES),
-            deny("READ", "Person", props=("name",)),
+            deny("READ", "Person", "EmailAddress", props=("name",)),
         ),
     ),
     Role(
@@ -229,11 +238,21 @@ ROLES: tuple[Role, ...] = (
         "Clears content properties on schedule; honours legal hold",
         (
             grant("ACCESS"),
-            grant("TRAVERSE", "Record", "Email", "Case", "Flag"),
-            grant("TRAVERSE", "HAS", "ON", segment="RELATIONSHIPS"),
-            grant("READ", "Record", "Email", props=("key", "retention_until")),
-            grant("READ", "Flag", props=("label",)),
-            grant("SET PROPERTY", "Record", "Email", props=CONTENT_PROPERTIES),
+            grant("TRAVERSE", "Record", "Email", "Case", "Flag", "Tag", "Person", "Device", "IngestError"),
+            grant("TRAVERSE", "HAS", "ON", "SUBJECT", "USES", "FROM", "TO", "SENT_FROM", segment="RELATIONSHIPS"),
+            grant("READ", "Record", "Email", props=("key", "occurred_at", "content_purged_at")),
+            grant("READ", "Tag", props=("label", "current")),
+            grant("READ", "Flag", props=("label", "active", "expires_at")),
+            grant("READ", "Case", props=("id", "window_from", "window_to")),
+            grant("READ", "IngestError", props=("id", "created_at")),
+            grant(
+                "SET PROPERTY", "Record", "Email", props=(*CONTENT_PROPERTIES, "content_purged_at", "content_purged_by")
+            ),
+            grant("SET PROPERTY", "IngestError", props=("raw_enc", "raw_purged_at")),
+            grant("MATCH", "Activity", "SoftwareAgent"),
+            grant("CREATE", "Activity"),
+            grant("SET PROPERTY", "Activity"),
+            grant("CREATE", *PROVENANCE_RELS, segment="RELATIONSHIPS"),
             deny("DELETE"),
         ),
     ),
