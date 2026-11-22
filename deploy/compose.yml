@@ -1,9 +1,29 @@
 # Development stack for Uniondeb. Implements: UND-013
 # Neo4j Enterprise (evaluation licence) stands in for AuraDB Business Critical, so roles,
 # fine-grained privileges and multiple databases behave as they will in Aura.
-#   cp deploy/.env.example deploy/.env && docker compose -f deploy/compose.yml up -d
-#   uv run uniondeb store migrate && uv run uniondeb store migrate --synthetic
+#
+# Run from the repository root (compose.yaml there includes this file):
+#   cp deploy/.env.example deploy/.env
+#   docker compose up -d --wait              # Neo4j, the synthetic database, migrations
+#   docker compose run --rm uniondeb …       # the CLI, e.g. `store status`
+#   docker compose run --rm dev              # pytest, including the Neo4j integration tests
+#   docker compose run --rm dev ruff check
 name: uniondeb
+
+# Containers reach Neo4j by service name; deploy/.env keeps localhost for tools run on the host.
+x-store-env: &store-env
+  UNIONDEB_NEO4J_URI: neo4j://neo4j:7687
+  UNIONDEB_NEO4J_USER: neo4j
+  UNIONDEB_NEO4J_PASSWORD: "${UNIONDEB_NEO4J_PASSWORD:?set UNIONDEB_NEO4J_PASSWORD in deploy/.env}"
+  UNIONDEB_NEO4J_DATABASE: "${UNIONDEB_NEO4J_DATABASE:-neo4j}"
+
+x-runtime: &runtime
+  image: uniondeb:local
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile
+    target: runtime
+  environment: *store-env
 
 services:
   neo4j:
@@ -42,6 +62,82 @@ services:
     entrypoint: ["sh", "-c", "cypher-shell -a neo4j://neo4j:7687 -u neo4j -p \"$$UNIONDEB_NEO4J_PASSWORD\" -d system -f /init/databases.cypher"]
     restart: "no"
 
+  # One-shot: brings both databases to the current migration. Idempotent, so it reruns on every `up`.
+  migrate:
+    <<: *runtime
+    depends_on:
+      neo4j-init:
+        condition: service_completed_successfully
+    entrypoint: ["sh", "-c", "uniondeb store migrate && uniondeb store migrate --synthetic"]
+    restart: "no"
+
+  # The CLI, on demand: docker compose run --rm uniondeb synth generate --out run-1
+  # Paths are relative to ./data in the repository (git-ignored), mounted at /work.
+  uniondeb:
+    <<: *runtime
+    profiles: [cli]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    user: "${UNIONDEB_UID:-10001}:${UNIONDEB_GID:-10001}"
+    volumes:
+      - ../data:/work
+
+  # The gateway API, review console and investigation portal on http://localhost:8000, and the worker
+  # that runs ingest, tagging, scans, retention and the nightly audit check. Both work on the synthetic
+  # database. They need the three secrets in deploy/.env (see .env.example) and refuse to start without them:
+  #   docker compose --profile app up -d
+  api:
+    <<: *runtime
+    profiles: [app]
+    depends_on: &migrated
+      migrate:
+        condition: service_completed_successfully
+    environment: &app-env
+      <<: *store-env
+      UNIONDEB_SYNTHETIC: "1"
+      UNIONDEB_FIELD_KEY: "${UNIONDEB_FIELD_KEY:-}"
+      UNIONDEB_PSEUDONYM_KEY: "${UNIONDEB_PSEUDONYM_KEY:-}"
+      UNIONDEB_AUTH_SECRET: "${UNIONDEB_AUTH_SECRET:-}"
+      UNIONDEB_DATA_DIR: /var/lib/uniondeb
+      UNIONDEB_EXTRACT_ROOT: /run/uniondeb/extracts
+      LOGFIRE_TOKEN: "${LOGFIRE_TOKEN:-}"
+    command: ["api", "serve", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "127.0.0.1:${UNIONDEB_API_PORT:-8000}:8000"
+    volumes: &app-volumes
+      - uniondeb-data:/var/lib/uniondeb
+    # Agent extracts are unencrypted Relate files (ADR 0002): memory-backed here, never on disk.
+    tmpfs: &extracts
+      - /run/uniondeb:uid=10001,gid=10001,mode=0700
+
+  worker:
+    <<: *runtime
+    profiles: [app]
+    depends_on: *migrated
+    environment: *app-env
+    command: ["worker", "run"]
+    volumes: *app-volumes
+    tmpfs: *extracts
+
+  # The workspace with dev tools, on demand; the checkout is mounted, so edits need no rebuild.
+  dev:
+    image: uniondeb-dev:local
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: dev
+    profiles: [dev]
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    environment:
+      <<: *store-env
+      UNIONDEB_INTEGRATION: "1"
+    volumes:
+      - ..:/app
+
 volumes:
   neo4j-data:
   neo4j-logs:
+  uniondeb-data:

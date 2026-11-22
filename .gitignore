@@ -226,3 +226,6 @@ __marimo__/
 traffic/run*/
 *.rl
 .env
+
+# Uniondeb: working directory mounted into the `uniondeb` CLI container (deploy/compose.yml)
+/data/
