@@ -1,0 +1,41 @@
+id: didolwr.tag-batch.v1
+purpose: Tag the untagged records of one source file. Content plus minimal context; parties are pseudonyms
+agent: didolwr
+aura_role: svc_extract_content
+max_rows: 60000
+ttl_minutes: 30
+params: [file]
+pseudonymise: [Party.id]
+tables:
+  - name: records
+    node: Record
+    key: key
+    columns: [key, dataset, channel, network, direction, occurred_at, action, subject, body, transcript, content]
+    cypher: |
+      MATCH (:SourceFile {sha256: $file})-[:CONTAINED]->(r:Record)
+      WHERE NOT EXISTS { (:Tag {current: true})-[:ON]->(r) }
+      RETURN r.key AS key, r.dataset AS dataset, r.channel AS channel, r.network AS network,
+             r.direction AS direction, r.occurred_at AS occurred_at, r.action AS action,
+             r.subject AS subject, r.body AS body, r.transcript AS transcript, r.content AS content
+  - name: parties
+    node: Party
+    key: id
+    columns: [id, device_kind, party_kind]
+    cypher: |
+      MATCH (:SourceFile {sha256: $file})-[:CONTAINED]->(r:Record)-[:FROM|TO|ON|SENT_FROM]->(d:Device)
+      WHERE NOT EXISTS { (:Tag {current: true})-[:ON]->(r) }
+      WITH DISTINCT d
+      OPTIONAL MATCH (p:Person)-[:USES]->(d)
+      WITH d, collect(p.kind) AS kinds
+      RETURN d.id AS id, d.kind AS device_kind,
+             CASE WHEN 'employee' IN kinds THEN 'employee' WHEN 'external' IN kinds THEN 'external'
+                  ELSE 'unknown' END AS party_kind
+  - name: involves
+    rel: INVOLVES
+    start: {node: Record, column: record}
+    end: {node: Party, column: party}
+    columns: [record, party, role]
+    cypher: |
+      MATCH (:SourceFile {sha256: $file})-[:CONTAINED]->(r:Record)-[l:FROM|TO|ON|SENT_FROM]->(d:Device)
+      WHERE NOT EXISTS { (:Tag {current: true})-[:ON]->(r) }
+      RETURN r.key AS record, d.id AS party, type(l) AS role

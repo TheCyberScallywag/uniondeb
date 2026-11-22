@@ -1,0 +1,26 @@
+[project]
+name = "uniondeb-extract"
+version = "0.1.0"
+description = "Echdynnwr: extract contract registry and the Aura to Relate extract builder"
+requires-python = ">=3.14"
+license = "GPL-3.0-or-later"
+dependencies = [
+    "uniondeb-core",
+    "uniondeb-store[relate]",
+    "pyyaml>=6",
+    "pydantic>=2.12",
+]
+
+[project.entry-points."uniondeb.cli"]
+extract = "uniondeb.extract.cli:register"
+
+[tool.uv.sources]
+uniondeb-core = { workspace = true }
+uniondeb-store = { workspace = true }
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/uniondeb"]

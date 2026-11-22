@@ -1,0 +1,76 @@
+id: ymchwiliad.case.v1
+purpose: One case. The subject, the case window, two hops of contacts, and the content of flagged records only
+agent: holwr
+aura_role: svc_investigation
+max_rows: 50000
+ttl_minutes: 60
+params: [subject, from, to]
+forbid: [name]
+tables:
+  - name: parties
+    node: Party
+    key: id
+    columns: [id, kind, person_id, person_kind, is_subject]
+    cypher: |
+      MATCH (s:Person {id: $subject})-[:USES]->(sd:Device)
+      OPTIONAL MATCH (sd)<-[:FROM|TO]-(r1:Record)-[:FROM|TO]->(c:Device)
+      WHERE r1.occurred_at >= $from AND r1.occurred_at < $to
+      WITH collect(DISTINCT sd) + collect(DISTINCT c) AS near
+      MATCH (a:Device)<-[:FROM|TO]-(r:Record)-[:FROM|TO]->(b:Device)
+      WHERE a IN near AND r.occurred_at >= $from AND r.occurred_at < $to
+      WITH collect(DISTINCT a) + collect(DISTINCT b) AS all
+      UNWIND all AS d
+      WITH DISTINCT d
+      OPTIONAL MATCH (p:Person)-[:USES]->(d)
+      WITH d, collect(p) AS owners
+      RETURN d.id AS id, d.kind AS kind, [o IN owners | o.person_id][0] AS person_id,
+             [o IN owners | o.kind][0] AS person_kind, $subject IN [o IN owners | o.id] AS is_subject
+  - name: records
+    node: Record
+    key: key
+    columns: [key, dataset, at, medium, duration_s, tag, clauses, trigger_hits, hop, text]
+    cypher: |
+      MATCH (s:Person {id: $subject})-[:USES]->(sd:Device)
+      OPTIONAL MATCH (sd)<-[:FROM|TO]-(r1:Record)-[:FROM|TO]->(c:Device)
+      WHERE r1.occurred_at >= $from AND r1.occurred_at < $to
+      WITH collect(DISTINCT sd) AS own, collect(DISTINCT sd) + collect(DISTINCT c) AS near
+      MATCH (a:Device)<-[:FROM]-(r:Record)-[:TO]->(b:Device)
+      WHERE (a IN near OR b IN near) AND r.occurred_at >= $from AND r.occurred_at < $to
+      WITH DISTINCT r, (a IN own OR b IN own) AS direct
+      OPTIONAL MATCH (t:Tag {current: true})-[:ON]->(r)
+      OPTIONAL MATCH (f:Flag {active: true})-[:ON]->(r)
+      WITH r, direct, t, count(f) AS flags
+      RETURN r.key AS key, r.dataset AS dataset, r.occurred_at AS at, coalesce(r.channel, r.network) AS medium,
+             r.duration_s AS duration_s, coalesce(t.label, 'untagged') AS tag, t.clauses AS clauses,
+             t.trigger_hits AS trigger_hits, CASE WHEN direct THEN 1 ELSE 2 END AS hop,
+             CASE WHEN t.label IN ['question', 'dirty'] OR flags > 0
+                  THEN coalesce(r.body, r.transcript, r.content) END AS text
+  - name: contacts
+    rel: CONTACT
+    start: {node: Party, column: a}
+    end: {node: Party, column: b}
+    columns: [a, b, record, at, medium]
+    cypher: |
+      MATCH (s:Person {id: $subject})-[:USES]->(sd:Device)
+      OPTIONAL MATCH (sd)<-[:FROM|TO]-(r1:Record)-[:FROM|TO]->(c:Device)
+      WHERE r1.occurred_at >= $from AND r1.occurred_at < $to
+      WITH collect(DISTINCT sd) + collect(DISTINCT c) AS near
+      MATCH (a:Device)<-[:FROM]-(r:Record)-[:TO]->(b:Device)
+      WHERE (a IN near OR b IN near) AND r.occurred_at >= $from AND r.occurred_at < $to
+      RETURN DISTINCT a.id AS a, b.id AS b, r.key AS record, r.occurred_at AS at,
+             coalesce(r.channel, r.network) AS medium
+  - name: emails
+    node: Email
+    key: key
+    columns: [key, at, direction, tag, clauses, recipients, attachments, text]
+    cypher: |
+      MATCH (:Person {id: $subject})<-[:BELONGS_TO]-(:EmailAddress)<-[:FROM]-(r:Record)
+      WHERE r.occurred_at >= $from AND r.occurred_at < $to
+      OPTIONAL MATCH (t:Tag {current: true})-[:ON]->(r)
+      OPTIONAL MATCH (r)-[:TO]->(to:EmailAddress)
+      WITH r, t, collect(DISTINCT to.address) AS recipients
+      OPTIONAL MATCH (r)-[:ATTACHED]->(x:Attachment)
+      WITH r, t, recipients, collect(DISTINCT x.sha256) AS attachments
+      RETURN r.key AS key, r.occurred_at AS at, r.direction AS direction, coalesce(t.label, 'untagged') AS tag,
+             t.clauses AS clauses, recipients, attachments,
+             CASE WHEN t.label IN ['question', 'dirty'] THEN r.subject + '\n' + coalesce(r.body, '') END AS text

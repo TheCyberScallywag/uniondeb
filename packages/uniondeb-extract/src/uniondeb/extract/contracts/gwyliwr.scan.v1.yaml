@@ -1,0 +1,76 @@
+id: gwyliwr.scan.v1
+purpose: Concern volumes per employee and contact topology for one scan window. Counts and structure only, never content
+agent: gwyliwr
+aura_role: svc_extract_metrics
+max_rows: 250000
+ttl_minutes: 60
+params: [from, to]
+defaults:
+  personal_domains: [mail.example, post.example]
+pseudonymise: [Person.pid, PersonDay.pid, Device.id, Device.owner_pid, Mail.sender_pid]
+tables:
+  - name: people
+    node: Person
+    key: pid
+    columns: [pid, team, insider_list]
+    cypher: |
+      MATCH (p:Person) WHERE p.kind = 'employee'
+      RETURN p.id AS pid, p.team AS team, p.insider_list AS insider_list
+  - name: daily
+    node: PersonDay
+    columns: [pid, day, records, question, dirty]
+    cypher: |
+      CALL {
+        MATCH (p:Person)-[:USES]->(:Device)<-[:FROM|TO|ON|SENT_FROM]-(r:Record) RETURN p, r
+        UNION
+        MATCH (p:Person)<-[:BELONGS_TO]-(:EmailAddress)<-[:FROM]-(r:Record) RETURN p, r
+      }
+      WITH p, r WHERE p.kind = 'employee' AND r.occurred_at >= $from AND r.occurred_at < $to
+      OPTIONAL MATCH (t:Tag)-[:ON]->(r) WHERE t.current = true OR (t.proposed = true AND t.superseded_by IS NULL)
+      WITH p, r, collect(t.label) AS labels
+      RETURN p.id AS pid, substring(r.occurred_at, 0, 10) AS day, count(r) AS records,
+             sum(CASE WHEN 'question' IN labels AND NOT 'dirty' IN labels THEN 1 ELSE 0 END) AS question,
+             sum(CASE WHEN 'dirty' IN labels THEN 1 ELSE 0 END) AS dirty
+  - name: devices
+    node: Device
+    key: id
+    columns: [id, kind, registered, owner_pid, owner_kind, insider_list]
+    cypher: |
+      MATCH (d:Device)<-[:FROM|TO|ON|SENT_FROM]-(r:Record)
+      WHERE r.occurred_at >= $from AND r.occurred_at < $to
+      WITH DISTINCT d
+      OPTIONAL MATCH (p:Person)-[:USES]->(d) WHERE p.person_id IS NOT NULL
+      WITH d, collect(p) AS owners
+      RETURN d.id AS id, d.kind AS kind, size(owners) > 0 AS registered,
+             [o IN owners | o.id][0] AS owner_pid, [o IN owners | o.kind][0] AS owner_kind,
+             [o IN owners | o.insider_list][0] AS insider_list
+  - name: contacts
+    rel: CONTACT
+    start: {node: Device, column: a}
+    end: {node: Device, column: b}
+    columns: [a, b, record, at, dataset, medium, duration_s, concern]
+    cypher: |
+      MATCH (a:Device)<-[:FROM]-(r:Record)-[:TO]->(b:Device)
+      WHERE r.occurred_at >= $from AND r.occurred_at < $to
+      OPTIONAL MATCH (t:Tag)-[:ON]->(r) WHERE t.current = true OR (t.proposed = true AND t.superseded_by IS NULL)
+      WITH a, b, r, collect(t.label) AS labels
+      RETURN a.id AS a, b.id AS b, r.key AS record, r.occurred_at AS at, r.dataset AS dataset,
+             coalesce(r.channel, r.network) AS medium, r.duration_s AS duration_s,
+             CASE WHEN 'dirty' IN labels THEN 'dirty' WHEN 'question' IN labels THEN 'question' ELSE 'none' END AS concern
+  - name: mails
+    node: Mail
+    key: record
+    columns: [record, at, sender_pid, direction, personal_recipients, self_forward, attachments]
+    cypher: |
+      MATCH (p:Person)<-[:BELONGS_TO]-(s:EmailAddress)<-[:FROM]-(r:Record)
+      WHERE r.occurred_at >= $from AND r.occurred_at < $to
+      OPTIONAL MATCH (r)-[:TO]->(t:EmailAddress)
+      WITH p, s, r, collect(t) AS recipients
+      OPTIONAL MATCH (r)-[:ATTACHED]->(x:Attachment)
+      WITH p, s, r, recipients, collect(x.sha256) AS attachments
+      RETURN r.key AS record, r.occurred_at AS at, p.id AS sender_pid, r.direction AS direction,
+             size([t IN recipients WHERE t.domain IN $personal_domains]) AS personal_recipients,
+             size([t IN recipients WHERE t.domain IN $personal_domains
+                   AND replace(split(t.address, '@')[0], '.', '') = replace(split(s.address, '@')[0], '.', '')]) > 0
+               AS self_forward,
+             attachments

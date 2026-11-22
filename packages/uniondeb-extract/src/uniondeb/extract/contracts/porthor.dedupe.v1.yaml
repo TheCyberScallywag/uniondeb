@@ -1,0 +1,16 @@
+id: porthor.dedupe.v1
+purpose: Keys and content hashes already ingested for a file's date range, so duplicates are linked not re-ingested
+agent: porthor
+aura_role: svc_ingest
+max_rows: 250000
+ttl_minutes: 30
+params: [from, to]
+tables:
+  - name: records
+    node: Record
+    key: key
+    columns: [key, content_sha256]
+    cypher: |
+      MATCH (r:Record)
+      WHERE r.occurred_at >= $from AND r.occurred_at < $to
+      RETURN r.key AS key, r.content_sha256 AS content_sha256

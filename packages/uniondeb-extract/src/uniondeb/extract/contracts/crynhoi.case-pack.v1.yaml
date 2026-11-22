@@ -1,0 +1,46 @@
+id: crynhoi.case-pack.v1
+purpose: The evidence a reviewer needs for one subject and window. Flagged records, their tag history and provenance
+agent: crynhoi
+aura_role: svc_investigation
+max_rows: 20000
+ttl_minutes: 30
+params: [subject, from, to]
+forbid: [name]
+tables:
+  - name: records
+    node: Record
+    key: key
+    columns: [key, dataset, at, medium, text, source_sha256, ingest_activity_id]
+    cypher: |
+      CALL {
+        MATCH (p:Person {id: $subject})-[:USES]->(:Device)<-[:FROM|TO|ON|SENT_FROM]-(r:Record) RETURN r
+        UNION
+        MATCH (p:Person {id: $subject})<-[:BELONGS_TO]-(:EmailAddress)<-[:FROM]-(r:Record) RETURN r
+      }
+      WITH r WHERE r.occurred_at >= $from AND r.occurred_at < $to
+        AND EXISTS { (t:Tag)-[:ON]->(r) WHERE t.label IN ['question', 'dirty'] AND (t.current = true OR t.proposed = true) }
+      OPTIONAL MATCH (f:SourceFile)-[:CONTAINED]->(r)
+      WITH r, collect(f.sha256) AS sources
+      RETURN r.key AS key, r.dataset AS dataset, r.occurred_at AS at, coalesce(r.channel, r.network) AS medium,
+             CASE WHEN r.subject IS NOT NULL THEN r.subject + '\n' + coalesce(r.body, '')
+                  ELSE coalesce(r.body, r.transcript, r.content) END AS text, sources[0] AS source_sha256,
+             r.ingest_activity_id AS ingest_activity_id
+  - name: tags
+    node: Tag
+    key: id
+    columns: [id, record, label, method, current, proposed, clauses, trigger_hits, trigger_list_version,
+              evidence_span, created_by, created_at, model, prompt_version, activity_id]
+    cypher: |
+      CALL {
+        MATCH (p:Person {id: $subject})-[:USES]->(:Device)<-[:FROM|TO|ON|SENT_FROM]-(r:Record) RETURN r
+        UNION
+        MATCH (p:Person {id: $subject})<-[:BELONGS_TO]-(:EmailAddress)<-[:FROM]-(r:Record) RETURN r
+      }
+      WITH r WHERE r.occurred_at >= $from AND r.occurred_at < $to
+        AND EXISTS { (t:Tag)-[:ON]->(r) WHERE t.label IN ['question', 'dirty'] AND (t.current = true OR t.proposed = true) }
+      MATCH (t:Tag)-[:ON]->(r)
+      RETURN t.id AS id, r.key AS record, t.label AS label, t.method AS method, t.current AS current,
+             t.proposed AS proposed, t.clauses AS clauses, t.trigger_hits AS trigger_hits,
+             t.trigger_list_version AS trigger_list_version, t.evidence_span AS evidence_span,
+             t.created_by AS created_by, t.created_at AS created_at, t.model AS model,
+             t.prompt_version AS prompt_version, t.activity_id AS activity_id
