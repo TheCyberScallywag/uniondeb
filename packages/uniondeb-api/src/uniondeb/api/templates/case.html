@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Case {{ case.id[-8:] }}{% endblock %}
+{% block main %}
+{% set base = "/portal/cases/" ~ case.id %}
+{% set open = case.state == "open" %}
+<h1>Case {{ case.id[-8:] }} <span class="muted">{{ case.subject_pseudonym }} · {{ case.state }}{% if case.outcome %} · {{ case.outcome }}{% endif %}</span></h1>
+<section><h2>Case</h2>
+  <p>{{ case.opened_reason }}</p>
+  <p class="muted">Opened {{ case.opened_at[:16] }} by {{ case.opened_by }} ({{ case.origin }}) · window {{ (case.window_from or "start")[:10] }} to {{ (case.window_to or "now")[:10] }} · investigators: {{ case.investigators | join(", ") or "none" }}</p>
+  {% if profile %}
+    <p><strong>{{ profile.identity.name }}</strong> · {{ profile.identity.person_id }} · {{ profile.identity.team }} · {{ profile.identity.role }}</p>
+    <table><tr><th>Device</th><th>Kind</th><th>Identifiers</th></tr>{% for d in profile.devices %}<tr><td>{{ d.device }}</td><td>{{ d.kind }}</td><td>{% for i in d.identifiers if i.kind %}{{ i.kind }} {{ i.value }}{% if not loop.last %}, {% endif %}{% endfor %}</td></tr>{% endfor %}</table>
+    <p class="muted">This reveal has been logged with your reason.</p>
+  {% else %}
+    <form class="inline" method="post" action="{{ base }}/reveal"><input name="reason" placeholder="Why you need the identity" required size="40"><button>Reveal identity</button><span class="muted">Logged with who, when and why.</span></form>
+  {% endif %}
+  {% if "nominated_officer" in principal.roles and open %}
+    <form class="inline" method="post" action="{{ base }}/assign"><input name="investigator_id" placeholder="Investigator user id" required><input name="person_id" placeholder="Their roster id"><button>Assign</button></form>
+  {% endif %}
+</section>
+<section><h2>Timeline <span class="muted">{{ timeline | length }} records; text shown for flagged records only</span></h2>
+<table><tr><th>When</th><th>Record</th><th>Medium</th><th>Tag</th><th>Evidence</th><th>Text</th></tr>
+{% for r in timeline %}<tr><td>{{ r.at[:16] }}</td><td>{{ r.key }}</td><td>{{ r.medium or r.dataset }}{% if r.direction %} · {{ r.direction }}{% endif %}</td>
+<td><span class="tag {{ r.tag }}">{{ r.tag }}</span>{% if r.proposals %} <span class="tag dirty">{{ r.proposals | join(",") }} proposed</span>{% endif %}{% if r.method %} <span class="muted">{{ r.method }}</span>{% endif %}</td>
+<td>{{ r.evidence_span or (r.trigger_hits or []) | join(", ") }}{% if r.clauses %} <span class="muted">{{ r.clauses | join(", ") }}</span>{% endif %}</td><td><pre>{{ r.text or "" }}</pre></td></tr>{% endfor %}
+</table>
+{% if open %}
+<form class="inline" method="post" action="{{ base }}/tag"><input name="key" placeholder="Record key" required><select name="label"><option>dirty</option><option>question</option><option>clean</option></select><input name="clauses" placeholder="CE1 CE4"><input name="rationale" placeholder="Rationale (required)" required size="30"><label><input type="checkbox" name="context"> context only</label><button>Set tag</button></form>
+{% endif %}
+<form class="inline" method="post" action="{{ base }}/provenance"><input name="key" placeholder="Record key" required><button>Show provenance</button></form>
+{% if provenance %}<pre>{{ provenance | pretty }}</pre>{% endif %}
+</section>
+<section><h2>Contacts</h2>
+<table><tr><th>Device</th><th>Kind</th><th>Registered to</th><th>Records</th><th>Channels</th><th>First</th><th>Last</th></tr>
+{% for c in contacts %}<tr><td>{{ c.device }}</td><td>{{ c.kind }}</td><td>{% if c.unregistered %}<span class="tag dirty">unregistered</span>{% else %}{{ c.owners | join(", ") }} <span class="muted">{{ c.kinds | join(", ") }}</span>{% endif %}</td><td>{{ c.records }}</td><td>{{ c.media | join(", ") }}</td><td>{{ c.first[:16] }}</td><td>{{ c.last[:16] }}</td></tr>{% endfor %}
+</table></section>
+<section><h2>Ask Holwr</h2>
+<form class="inline" method="post" action="{{ base }}/holwr"><input name="question" placeholder="Who did they call the week before the announcement?" required size="60"><button>Ask</button></form>
+{% if answer %}<p>{{ answer.answer }}</p><p class="muted">Records: {{ answer.record_keys | join(", ") }}</p>{% for q in answer.cypher %}<pre>{{ q }}</pre>{% endfor %}{% endif %}
+<p class="muted">Holwr answers from this case's extract only, and every question is logged.</p>
+</section>
+<section><h2>Flags</h2>
+<table><tr><th>Flag</th><th>On</th><th>Reason</th><th>Set by</th><th>Active</th></tr>
+{% for f in flags %}<tr><td>{{ f.label }}{% if f.param %} ({{ f.param }}){% endif %}{% if f.hypothesis %} <span class="muted">hypothesis</span>{% endif %}</td><td>{{ f.target_label }} {{ f.target_key }}</td><td>{{ f.reason }}</td><td>{{ f.set_by }} · {{ f.set_at[:16] }}</td><td>{{ "yes" if f.active else "cleared" }}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">No flags.</td></tr>{% endfor %}</table>
+<form class="inline" method="post" action="{{ base }}/flag"><select name="label">{% for v in vocabulary %}<option value="{{ v.label }}">{{ v.label }} ({{ v.kind }})</option>{% endfor %}</select>
+<select name="target_label"><option value="">this case</option><option>Person</option><option>Device</option><option>Record</option></select><input name="target_key" placeholder="Target id"><input name="param" placeholder="Parameter"><input name="reason" placeholder="Reason (required)" required><button>Set flag</button></form>
+</section>
+<section><h2>Notes</h2>
+{% for n in notes %}<blockquote>{{ n.text }}<br><span class="muted">{{ n.author }} · {{ n.at[:16] }}</span></blockquote>{% else %}<p class="muted">No notes.</p>{% endfor %}
+{% if open %}<form method="post" action="{{ base }}/note"><textarea name="text" aria-label="Note" required></textarea><p><button>Add note</button></p></form>{% endif %}
+</section>
+<section><h2>Suspicious Activity Report <span class="muted">submission is mocked</span></h2>
+{% for s in submissions %}<p>Submitted: <strong>{{ s.reference }}</strong> · payload SHA-256 {{ s.payload_sha256[:16] }}… · drafted by {{ s.drafted_by }}, approved by {{ s.approved_by }}</p>{% endfor %}
+{% for d in drafts %}
+  <form method="post" action="{{ base }}/sar_draft"><input type="hidden" name="draft_id" value="{{ d.id }}">
+  <p class="muted">Draft {{ d.id[-8:] }} · {{ d.state }} · by {{ d.drafted_by }}</p>
+  <textarea name="fields" aria-label="SAR fields as JSON" style="min-height:14rem">{{ d.payload | pretty }}</textarea>
+  {% if d.state == "draft" %}<p><button>Save draft</button></p>{% endif %}</form>
+  {% if d.state == "draft" and "nominated_officer" in principal.roles %}<form class="inline" method="post" action="{{ base }}/sar_approve"><input type="hidden" name="draft_id" value="{{ d.id }}"><button>Approve and submit (nominated officer)</button></form>{% endif %}
+{% else %}
+  {% if open %}<form method="post" action="{{ base }}/sar_draft"><textarea name="fields" aria-label="SAR fields as JSON" style="min-height:10rem">{"subject": {"name": "UNKNOWN", "date_of_birth": "UNKNOWN", "address": "UNKNOWN", "identifiers": ["UNKNOWN"], "occupation": "UNKNOWN"}, "glossary_codes": [], "reason_for_suspicion": ""}</textarea><p><button>Start draft</button></p></form>{% endif %}
+{% endfor %}
+{% if open %}<form class="inline" method="post" action="{{ base }}/sar_narrative"><button>Ask Holwr to draft the narrative</button></form>{% endif %}
+{% if narrative %}<pre>{{ narrative.model_dump() | pretty }}</pre>{% endif %}
+</section>
+{% if "nominated_officer" in principal.roles and open %}
+<section><h2>Close case</h2>
+<form method="post" action="{{ base }}/close"><p><label>Outcome <select name="outcome"><option>closed_no_action</option><option>closed_conduct_process</option><option>sar_submitted</option><option>referred</option></select></label></p>
+<p><label>Retention review (required)<textarea name="retention_review" required></textarea></label></p><button>Close</button></form></section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Ymchwiliad{% endblock %}
+{% block main %}
+<h1>Ymchwiliad: your cases</h1>
+<section>
+<table><tr><th>Case</th><th>Subject</th><th>State</th><th>Origin</th><th>Opened</th><th>Investigators</th></tr>
+{% for c in cases %}<tr><td><a href="/portal/cases/{{ c.id }}">{{ c.id[-8:] }}</a></td><td>{{ c.subject_pseudonym }}</td><td>{{ c.state }}{% if c.outcome %} · {{ c.outcome }}{% endif %}</td><td>{{ c.origin }}</td><td>{{ c.opened_at[:16] }}</td><td>{{ c.investigators | join(", ") }}</td></tr>
+{% else %}<tr><td colspan="6" class="muted">No cases are assigned to you.</td></tr>{% endfor %}
+</table>
+</section>
+{% if "nominated_officer" in principal.roles %}
+<section><h2>Open a case</h2>
+<form method="post" action="/portal">
+  <p><label>Person (roster id) <input name="person" required></label></p>
+  <p><label>Written reason (required)<textarea name="reason" required></textarea></label></p>
+  <button>Open case</button>
+</form></section>
+{% endif %}
+{% endblock %}
