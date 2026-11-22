@@ -1,0 +1,16 @@
+# SAR glossary codes accepted in a SarPayload (plan §7.5).
+#
+# ILLUSTRATIVE PLACEHOLDER. These entries exist so the format and workflow can be exercised
+# against the mock portal. They are not an authoritative or current list. Before any real
+# submission, replace this file from the NCA's current SAR glossary codes booklet and record the
+# booklet's edition in `source` and `version`.
+source: "PLACEHOLDER - replace from the NCA's current SAR glossary codes and reporting routes booklet"
+version: "placeholder-0"
+codes:
+  XXS99XX: Request for a defence against money laundering
+  XXD9XX: Suspected proceeds of the supply of controlled drugs
+  XXF9XX: Suspected fraud against a private-sector organisation
+  XXV2XX: Risk to a vulnerable adult
+  XXMLTMXX: Money laundering through markets
+  XXTBMLXX: Trade-based money laundering
+  XXPROPXX: Purchase or rental of property
