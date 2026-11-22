@@ -26,7 +26,7 @@ def test_from_env_reads_prefixed_variables_and_hides_password():
 
 def test_overrides_win_and_none_is_ignored():
     s = StoreSettings.from_env({"UNIONDEB_NEO4J_DATABASE": "a"}, database=None, synthetic=True)
-    assert s.database == "a" and s.target_database == "uniondeb_synthetic"
+    assert s.database == "a" and s.target_database == "uniondeb-synthetic"
 
 
 @pytest.mark.parametrize("uri", ["http://localhost:7474", "localhost:7687", "neo4j+x://h"])

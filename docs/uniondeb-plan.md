@@ -1,6 +1,6 @@
 # Uniondeb: agentic conduct-assurance platform for CyberScallywags UK
 
-> **Status: DRAFT for review. Nothing in this plan has been built yet.**
+> **Status: the plan as written on 19 Nov 2026.** Phases 1 to 8 have since been built on synthetic data; see `README.md` for what exists and what is still open, and `docs/adr/` for where the build departed from this plan.
 > *Uniondeb* is Welsh for "integrity".
 > Prepared 19 Nov 2026. Builds on Sgwrs: its schemas, alias layer and synthetic traffic generator.
 
@@ -224,7 +224,7 @@ erDiagram
 - **Precedence:** `dirty` > `question` > `clean`. *Question* is purely deterministic: a trigger was hit, so it is auditable and repeatable. *Dirty* needs an ethics judgement: LLM-proposed, then human-confirmed.
 - **Provenance** follows W3C PROV-O: `Entity` (SourceFile, Record, Tag, Extract, CasePack), `Activity` (Upload, Ingest, Resolve, Validate, Tag, Scan, Review, Extract) and `Agent` (SoftwareAgent with name, version, model; Person for uploaders and reviewers). It answers questions like "show me everything that led to this tag, back to the uploaded file's hash".
 - **Cases, flags, SARs and audit events** (§7) live in Aura too, behind their own roles. Audit events are append-only and hash-chained, and no role can edit or delete them.
-- **Synthetic isolation:** synthetic runs load into a **separate database** (`uniondeb_synthetic`) so they never mix with real data. Every synthetic `SourceFile` carries `synthetic: true` from the generator's manifest.
+- **Synthetic isolation:** synthetic runs load into a **separate database** (`uniondeb-synthetic`) so they never mix with real data. Every synthetic `SourceFile` carries `synthetic: true` from the generator's manifest.
 
 ### Aura service accounts (fine-grained roles)
 

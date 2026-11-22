@@ -75,7 +75,7 @@ async def test_load_matches_ground_truth(run_dir, store):
     labelled = {f"{lab['dataset']}:{lab['record_key']}" for lab in _csv(run_dir / "ground_truth" / "labels.csv")}
     [row] = await store.run("MATCH (r:Record) RETURN collect(r.key) AS keys")
     assert set(row["keys"]) == labelled - bad_keys
-    assert result.summary()["database"] == "uniondeb_synthetic"
+    assert result.summary()["database"] == "uniondeb-synthetic"
 
 
 async def test_graph_shape_and_synthetic_flag(run_dir, store):
@@ -135,4 +135,4 @@ def test_cli(run_dir, tmp_path, capsys, monkeypatch):
     monkeypatch.delenv("UNIONDEB_NEO4J_URI", raising=False)
     assert main(["load", str(run_dir), "--uri", f"relate:{tmp_path / 's.rl'}", "--migrate"]) == 0
     out = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
-    assert out["database"] == "uniondeb_synthetic" and out["records"] > 0 and out["rejected"] >= 0
+    assert out["database"] == "uniondeb-synthetic" and out["records"] > 0 and out["rejected"] >= 0

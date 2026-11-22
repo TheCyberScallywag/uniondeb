@@ -24,9 +24,9 @@ async def neo4j_runner():
         pytest.skip("set UNIONDEB_INTEGRATION=1 with UNIONDEB_NEO4J_* to run against Neo4j")
     from uniondeb.store import Neo4jRunner, StoreSettings
 
-    runner = Neo4jRunner.from_settings(StoreSettings.from_env(database="uniondeb_it"))
+    runner = Neo4jRunner.from_settings(StoreSettings.from_env(database="uniondeb-it"))
     await runner.verify()
-    await runner.run_system("CREATE OR REPLACE DATABASE uniondeb_it WAIT")
+    await runner.run_system("CREATE OR REPLACE DATABASE `uniondeb-it` WAIT")
     yield runner
-    await runner.run_system("DROP DATABASE uniondeb_it IF EXISTS")
+    await runner.run_system("DROP DATABASE `uniondeb-it` IF EXISTS")
     await runner.close()

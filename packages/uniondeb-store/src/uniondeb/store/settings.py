@@ -23,7 +23,7 @@ class StoreSettings(BaseModel):
     user: str = "neo4j"
     password: SecretStr = SecretStr("")
     database: str = "neo4j"
-    synthetic_database: str = "uniondeb_synthetic"
+    synthetic_database: str = "uniondeb-synthetic"
     synthetic: bool = Field(default=False, description="Target the synthetic database instead")
 
     @field_validator("uri")
