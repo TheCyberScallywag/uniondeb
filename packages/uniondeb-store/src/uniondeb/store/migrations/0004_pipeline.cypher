@@ -1,4 +1,4 @@
-// Implements: UND-022, UND-023, UND-024, UND-031, UND-040, UND-050 — ingest errors, mapping proposals, jobs, registries
+// Ingest errors, mapping proposals, jobs, registries
 CREATE CONSTRAINT ingest_error_id IF NOT EXISTS FOR (n:IngestError) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT mapping_proposal_id IF NOT EXISTS FOR (n:MappingProposal) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT alias_registry_version IF NOT EXISTS FOR (n:AliasRegistry) REQUIRE n.version IS UNIQUE;

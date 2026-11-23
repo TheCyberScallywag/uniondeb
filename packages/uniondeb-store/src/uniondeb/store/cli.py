@@ -1,7 +1,4 @@
-"""``uniondeb store migrate|status|roles``.
-
-Implements: UND-013, UND-014, UND-022, UND-092
-"""
+"""``uniondeb store migrate|status|roles``."""
 
 import argparse
 import asyncio

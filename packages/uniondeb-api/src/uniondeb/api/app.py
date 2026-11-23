@@ -3,8 +3,6 @@
 Domain errors become HTTP statuses in one place, so every route refuses in the same way: a case
 that does not exist and a case the caller may not see are both ``404``, and nothing in an error
 body says which.
-
-Implements: UND-020, UND-050, UND-070
 """
 
 import os

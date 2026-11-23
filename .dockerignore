@@ -1,0 +1,19 @@
+# Build context for deploy/Dockerfile. Keep secrets and host artefacts out of images.
+.git
+.venv
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+**/.env
+**/.env.*
+!**/.env.example
+data
+schemas
+dist
+build
+*.egg-info
+.DS_Store
+.vscode
+.idea

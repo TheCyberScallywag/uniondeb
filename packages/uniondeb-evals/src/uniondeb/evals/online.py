@@ -1,4 +1,4 @@
-"""Online evals: what reviewers' decisions say about the agents, and who gets flagged (plan §8).
+"""Online evals: what reviewers' decisions say about the agents, and who gets flagged (design §8).
 
 Reviewer decisions are labelled examples for free. This report turns them into the numbers a
 governance owner should watch: how often two reviewers confirm what Didolwr proposed, what they
@@ -6,8 +6,6 @@ decide instead, and how concern rates differ by team and by language, so that ov
 Welsh-language messages or of one team is visible rather than assumed away.
 
 It reads tags, decisions and roster teams only: no content, no names.
-
-Implements: UND-082
 """
 
 from collections import Counter, defaultdict

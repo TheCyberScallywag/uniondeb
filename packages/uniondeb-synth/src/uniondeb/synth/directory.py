@@ -7,8 +7,6 @@ about half of households keep a landline; most employees have a work computer.
 
 All identifiers come from reserved ranges (see ``identifiers.py``). The Ofcom mobile
 drama range holds 1,000 numbers, which caps the number of mobiles per directory.
-
-Implements: UND-012
 """
 
 import random

@@ -1,4 +1,4 @@
-"""Build, register, open and expire agent extracts (plan §3.3, ADR 0002).
+"""Build, register, open and expire agent extracts (design §3.3, ADR 0002).
 
 ``Echdynnwr.build`` runs a contract's queries against the system of record under the contract's
 role, pseudonymises the listed columns with a key that exists only for that extract, and writes
@@ -11,8 +11,6 @@ and CI). Files are created ``0600`` and deleted by ``reap`` once their TTL passe
 
 The fallback backend writes the same tables as Parquet. Agents read tables through
 ``ExtractReader.rows``, which is the same on both; only free Cypher (Holwr) needs Relate.
-
-Implements: UND-032
 """
 
 import hashlib

@@ -1,7 +1,4 @@
-"""The Cennad pipeline without SMTP: raw store, publish, dead letters, duplicates, storage, settings.
-
-Verifies: UND-026
-"""
+"""The Cennad pipeline without SMTP: raw store, publish, dead letters, duplicates, storage, settings."""
 
 import hashlib
 import json

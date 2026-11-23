@@ -1,8 +1,4 @@
-"""A generated run pushed through render → Cennad: every message is published or dead-lettered, none lost.
-
-Verifies: UND-025
-Verifies: UND-026
-"""
+"""A generated run pushed through render → Cennad: every message is published or dead-lettered, none lost."""
 
 import pytest
 from pydantic import ValidationError

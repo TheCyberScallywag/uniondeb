@@ -1,4 +1,4 @@
-"""Extract contracts: what one agent may be given for one kind of job (plan §3.4).
+"""Extract contracts: what one agent may be given for one kind of job (design §3.4).
 
 A contract is a YAML file, reviewed like code. It names the agent, the Aura role the queries run
 under, a row cap, a time to live, the properties to pseudonymise and one or more *tables*. A table
@@ -13,8 +13,6 @@ Validation happens when the registry loads, before any extract is built:
 - every returned column is declared, and ``pseudonymise`` entries name declared columns.
 
 The contract hash covers every field, so any edit is a new contract version in provenance.
-
-Implements: UND-031
 """
 
 import hashlib

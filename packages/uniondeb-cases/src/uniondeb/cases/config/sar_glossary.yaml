@@ -1,4 +1,4 @@
-# SAR glossary codes accepted in a SarPayload (plan §7.5).
+# SAR glossary codes accepted in a SarPayload (design §7.5).
 #
 # ILLUSTRATIVE PLACEHOLDER. These entries exist so the format and workflow can be exercised
 # against the mock portal. They are not an authoritative or current list. Before any real

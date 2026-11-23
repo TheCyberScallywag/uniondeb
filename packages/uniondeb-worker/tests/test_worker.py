@@ -1,7 +1,4 @@
-"""Jobs run asynchronously with retries; scheduled slots run once; retention honours legal hold.
-
-Verifies: UND-024, UND-062, UND-090
-"""
+"""Jobs run asynchronously with retries; scheduled slots run once; retention honours legal hold."""
 
 import io
 import json
@@ -159,3 +156,34 @@ async def test_retention_purges_content_by_tag_keeps_metadata_and_honours_legal_
     partial.write_text("version: x\ncontent_days: {clean: 1}\ningest_error_raw_days: 1\n")
     with pytest.raises(ValueError, match="no period"):
         RetentionSchedule.load(partial)
+
+
+async def test_the_environment_selects_the_synthetic_database_when_the_caller_does_not(monkeypatch, tmp_path):
+    """`worker run` passes synthetic=None: UNIONDEB_SYNTHETIC=1 must still take effect (it did not)."""
+    from contextlib import asynccontextmanager
+
+    from uniondeb.store.crypto import FieldCipher
+    from uniondeb.worker import services as module
+
+    seen = []
+
+    @asynccontextmanager
+    async def fake_open(settings):
+        seen.append(settings.target_database)
+        yield object()
+
+    monkeypatch.setattr(module, "open_runner", fake_open)
+    monkeypatch.setattr(module.Services, "__post_init__", lambda self: None)
+    env = {
+        "UNIONDEB_PSEUDONYM_KEY": "k" * 32, "UNIONDEB_FIELD_KEY": FieldCipher.generate_key(),
+        "UNIONDEB_DATA_DIR": str(tmp_path), "UNIONDEB_EXTRACT_ROOT": str(tmp_path / "x"),
+    }  # fmt: skip
+    for extra, kwargs, expected in (
+        ({"UNIONDEB_SYNTHETIC": "1"}, {"synthetic": None}, "uniondeb-synthetic"),
+        ({"UNIONDEB_SYNTHETIC": "1"}, {}, "uniondeb-synthetic"),
+        ({}, {"synthetic": None}, "neo4j"),
+        ({}, {"synthetic": True}, "uniondeb-synthetic"),
+    ):
+        async with module.Services.from_env({**env, **extra}, **kwargs):
+            pass
+        assert seen[-1] == expected, (extra, kwargs)

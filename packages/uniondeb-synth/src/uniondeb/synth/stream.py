@@ -9,14 +9,12 @@ envelope-journaled to the platform. This module plays that stream:
     # generate live mail with current timestamps, ~30 a minute, rare scenario injections
     uniondeb synth stream live --rate 30 --scenario-rate 0.01 --sink kafka
 
-    # anywhere: --sink stdout (NDJSON) or --sink http --url http://api:8000/api/mail/journal
+    # anywhere: --sink stdout (NDJSON), or --sink http --url <an endpoint of your own that accepts the JSON>
 
 By default each document is **normalised** the way the receiver would: aliases resolved
 (Graph exports included), validated against ``EmailEvent``, and published as canonical
 JSON keyed by Message-ID. Documents that fail go to a dead-letter destination with the
 error, for human review. ``--raw`` publishes documents untouched (to exercise Porthor).
-
-Implements: UND-012
 """
 
 import argparse

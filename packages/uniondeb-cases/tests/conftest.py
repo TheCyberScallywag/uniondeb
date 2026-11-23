@@ -1,7 +1,4 @@
-"""Shared fixtures: an embedded store, the four services, and a small roster and device graph.
-
-Verifies: UND-070
-"""
+"""Shared fixtures: an embedded store, the four services, and a small roster and device graph."""
 
 import logfire
 import pytest

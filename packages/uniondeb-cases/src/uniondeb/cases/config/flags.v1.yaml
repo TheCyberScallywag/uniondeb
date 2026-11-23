@@ -1,4 +1,4 @@
-# Controlled flags vocabulary for Ymchwiliad (plan §7.3). Free text belongs in case notes.
+# Controlled flags vocabulary for Ymchwiliad (design §7.3). Free text belongs in case notes.
 # Change this by adding a new versioned file, not by editing labels in place: every Flag node
 # records the vocabulary version it was set under.
 version: "1"

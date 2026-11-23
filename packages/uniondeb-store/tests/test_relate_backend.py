@@ -1,7 +1,4 @@
-"""The real migrations run on an embedded Relate engine and enforce the constraints they declare.
-
-Verifies: UND-013
-"""
+"""The real migrations run on an embedded Relate engine and enforce the constraints they declare."""
 
 import pytest
 

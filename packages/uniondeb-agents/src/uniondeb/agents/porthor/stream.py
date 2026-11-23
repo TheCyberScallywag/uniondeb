@@ -1,11 +1,9 @@
-"""Porthor's streaming side: consume ``mail-journal`` and its dead-letter topic (plan §5.2).
+"""Porthor's streaming side: consume ``mail-journal`` and its dead-letter topic (design §5.2).
 
 One message in, one outcome. A journal copy is keyed by Message-ID, so a second copy of the same
 message (two journal rules, a redelivery) links its raw ``.eml`` hash to the record that already
 exists and writes nothing else. The raw message's SHA-256 is the ``SourceFile`` for provenance.
 Anything Cennad dead-lettered, and anything that no longer validates here, becomes a review item.
-
-Implements: UND-027
 """
 
 import hashlib

@@ -1,7 +1,4 @@
-"""Dataset schemas (JSON, CSV Table Schema, Parquet) agree with the contracts and round-trip.
-
-Verifies: UND-011
-"""
+"""Dataset schemas (JSON, CSV Table Schema, Parquet) agree with the contracts and round-trip."""
 
 import csv
 import io

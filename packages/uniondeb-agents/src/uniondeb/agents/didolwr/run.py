@@ -6,8 +6,6 @@ typed tag and review functions. The run is one ``Tag`` activity that used the ex
 trigger-list version and generated every tag and review item, with the model and prompt version.
 
 Without a judge the run still does the deterministic pass, so trigger tagging never waits for a model.
-
-Implements: UND-040, UND-041, UND-042
 """
 
 import asyncio

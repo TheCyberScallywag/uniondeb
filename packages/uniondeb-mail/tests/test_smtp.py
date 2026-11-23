@@ -1,7 +1,4 @@
-"""The SMTP endpoint against a real aiosmtpd controller on 127.0.0.1: allowlist, size, TLS, 250/451.
-
-Verifies: UND-026
-"""
+"""The SMTP endpoint against a real aiosmtpd controller on 127.0.0.1: allowlist, size, TLS, 250/451."""
 
 import contextlib
 import shutil

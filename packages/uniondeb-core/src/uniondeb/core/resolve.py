@@ -16,8 +16,6 @@ land on one canonical field, in three layers:
 
 Pass ``context={"report": ResolutionReport()}`` to ``model_validate`` to see every
 mapping that was applied, plus any keys that couldn't be resolved.
-
-Implements: UND-011
 """
 
 import re

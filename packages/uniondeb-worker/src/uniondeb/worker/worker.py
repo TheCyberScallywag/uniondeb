@@ -3,8 +3,6 @@
 ``Worker.run_once`` claims one job, runs its handler inside a Logfire span and records the outcome.
 ``schedule_due`` enqueues the periodic jobs whose time slot has arrived; each slot has a unique key,
 so any number of workers can run the scheduler and each slot is still enqueued exactly once.
-
-Implements: UND-024, UND-062
 """
 
 import asyncio

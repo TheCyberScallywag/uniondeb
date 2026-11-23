@@ -7,8 +7,6 @@ no single record states, such as which employee controls a burner phone.
 
 Traffic always involves at least one CyberScallywags employee, because that is the
 only traffic an organisation could legitimately hold.
-
-Implements: UND-012, UND-043
 """
 
 import math

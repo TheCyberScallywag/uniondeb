@@ -1,7 +1,4 @@
-"""Cross-device hand-off journeys: one person's conversation moving between devices and channels.
-
-Implements: UND-012
-"""
+"""Cross-device hand-off journeys: one person's conversation moving between devices and channels."""
 
 from uniondeb.core.models import DeviceType, StepChannel
 

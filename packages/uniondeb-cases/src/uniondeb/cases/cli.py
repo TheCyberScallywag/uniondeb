@@ -1,10 +1,8 @@
-"""``uniondeb audit verify|anchor``: the nightly check of the audit chain (plan §7.4).
+"""``uniondeb audit verify|anchor``: the nightly check of the audit chain (design §7.4).
 
 ``verify`` recomputes the chain and exits 1 when it is broken (and, with ``--anchor``, when a
 previously written anchor no longer matches). ``anchor --out`` verifies first, then writes the
 signed head outside the database; the key comes from ``UNIONDEB_AUDIT_ANCHOR_KEY``.
-
-Implements: UND-071
 """
 
 import argparse

@@ -1,7 +1,4 @@
-"""The generator emits labelled adversarial records without disturbing anything else.
-
-Verifies: UND-043
-"""
+"""The generator emits labelled adversarial records without disturbing anything else."""
 
 import csv
 import json

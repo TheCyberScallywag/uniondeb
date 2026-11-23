@@ -1,7 +1,4 @@
-"""Contracts are validated before anything is built, and the shipped ones are all valid.
-
-Verifies: UND-031
-"""
+"""Contracts are validated before anything is built, and the shipped ones are all valid."""
 
 import pytest
 

@@ -4,8 +4,6 @@ Detection never guesses silently. Format comes from magic bytes, then the first 
 dataset is the one whose contract accepts the most sample rows; when none accepts any, it is the
 one whose alias table recognises the most keys, so a file with faults is still routed to the right
 contract and its rows fail there with useful errors.
-
-Implements: UND-021
 """
 
 from pathlib import Path

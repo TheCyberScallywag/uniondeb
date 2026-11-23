@@ -2,8 +2,7 @@
 
 - Status: accepted (go, with conditions)
 - Date: 2026-11-19
-- Step: UND-030
-- Evidence: `scripts/spikes/relate_extract.py`, results in `docs/spikes/und-030-relate.json`
+- Evidence: `scripts/spikes/relate_extract.py`, results in `docs/spikes/relate-extract.json`
 
 ## Context
 
@@ -37,7 +36,7 @@ Finally it opened that file read-only, as an agent would.
 holds under the following conditions.
 
 1. **Pull path.** Echdynnwr runs the contract's Cypher against Aura through the scoped service role
-   (UND-014), pseudonymises in process, and writes the `.rl` with batched `UNWIND`. Agents never
+   pseudonymises in process, and writes the `.rl` with batched `UNWIND`. Agents never
    hold Aura credentials. If a native Aura pull ships later, it replaces only this step.
 2. **Size limits.** The default cap per extract is **250,000 records**, about 160 MB on disk and
    roughly 520 MB resident. Contracts may set a lower cap. Anything larger is split by time window
@@ -48,7 +47,7 @@ holds under the following conditions.
 4. **Encryption at rest.** Relate has none, so extracts live on an **encrypted, per-run volume**: a
    tmpfs (RAM-backed, never on disk) for dev and CI, and a LUKS/dm-crypt or cloud-KMS encrypted
    ephemeral volume in production. Files are `0600`, owned by the worker user. The builder's TTL
-   reaper (UND-032) deletes them, and each deletion is recorded as provenance. Extracts are never copied to
+   reaper deletes them, and each deletion is recorded as provenance. Extracts are never copied to
    object storage.
 5. **Provenance.** Every extract is an `Extract` entity whose build `Activity` USED the contract
    version and GENERATED the file hash, so a tag can be traced to the extract it was made from.
@@ -62,7 +61,7 @@ than the cap and batching is unacceptable.
 
 ## Consequences
 
-- UND-031 (contract registry) adds `max_records` and the pseudonymisation list to each contract.
-- UND-032 (extract builder) implements the pull path, the cap check, pseudonymisation, the file
+- The contract registry adds `max_records` and the pseudonymisation list to each contract.
+- The extract builder implements the pull path, the cap check, pseudonymisation, the file
   hash, the encrypted-volume mount, TTL deletion and the fallback backend.
 - Re-run the spike on each Relate minor release, and after the first run against real Aura.

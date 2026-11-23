@@ -1,7 +1,4 @@
-"""Uniondeb core: record contracts, identifiers, alias resolution and dataset schemas.
-
-Implements: UND-011
-"""
+"""Uniondeb core: record contracts, identifiers, alias resolution and dataset schemas."""
 
 from .mail import EmailEvent
 from .models import CallEvent, ComputerDevice, Device, HandoffStep, LandlineDevice, MessageEvent, MobileDevice

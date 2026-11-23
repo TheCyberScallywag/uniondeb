@@ -1,7 +1,5 @@
 """Quick, uniform generators per dataset (calls, sms, handoff): handy for tests and schema samples.
 The realistic roster-driven traffic and scenarios live in ``uniondeb.synth.scenarios``.
-
-Implements: UND-012
 """
 
 import random

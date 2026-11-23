@@ -1,7 +1,4 @@
-"""The gateway: authentication fails closed, uploads are hashed, limited, deduplicated and queued.
-
-Verifies: UND-020, UND-024, UND-022, UND-050
-"""
+"""The gateway: authentication fails closed, uploads are hashed, limited, deduplicated and queued."""
 
 import json
 import time

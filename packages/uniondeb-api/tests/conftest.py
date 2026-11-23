@@ -1,7 +1,4 @@
-"""API test fixtures: an app over an embedded store, and tokens for each role.
-
-Verifies: UND-020
-"""
+"""API test fixtures: an app over an embedded store, and tokens for each role."""
 
 import httpx
 import pytest

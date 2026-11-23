@@ -1,2 +1,2 @@
-// Implements: UND-013 — synthetic runs never share a database with real data (plan §4)
-CREATE DATABASE uniondeb_synthetic IF NOT EXISTS WAIT;
+// Synthetic runs never share a database with real data (design §4)
+CREATE DATABASE `uniondeb-synthetic` IF NOT EXISTS WAIT;

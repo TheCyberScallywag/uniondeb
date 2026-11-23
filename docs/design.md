@@ -1,8 +1,10 @@
-# Uniondeb: agentic conduct-assurance platform for CyberScallywags UK
+# Design
 
-> **Status: the plan as written on 19 Nov 2026.** Phases 1 to 8 have since been built on synthetic data; see `README.md` for what exists and what is still open, and `docs/adr/` for where the build departed from this plan.
+> **This is the original design, written on 19 Nov 2026**, kept because the code refers to its section
+> numbers ("design §7.1"). The rest of this documentation describes what was built. Where the build
+> departed from the design, [the decision records](adr/0003-one-store-one-process-family.md) say how and why.
+> The decisions the design asks of the organisation (referred to here as D1–D19) are listed under [Governance](governance.md).
 > *Uniondeb* is Welsh for "integrity".
-> Prepared 19 Nov 2026. Builds on Sgwrs: its schemas, alias layer and synthetic traffic generator.
 
 ---
 
@@ -526,68 +528,3 @@ uniondeb/                       uv workspace, Python 3.14
 | Agent extracts | Relate (`relate-db`) | 1.1.0 |
 | Queue | arq + Redis, or Kafka reused from Sgwrs (D6) | — |
 | Dev | Neo4j Enterprise container (tests RBAC), synthetic DB | — |
-
----
-
-## 10. Build plan
-
-Each phase ends with a demo on synthetic data and a green eval gate.
-
-| Phase | Deliverable | Acceptance criteria | Size |
-|---|---|---|---|
-| **0. Governance** (parallel) | DPIA, LIA, adopted code of ethics, trigger list v1, scope decision, reviewer roster | G1–G13 signed off before real data | M |
-| **1. Foundations** | uv workspace; port `sgwrs` core; Aura schema, roles and migrations as code; PROV library; Logfire; CI | Synthetic run loads with full provenance; constraints and roles verified by tests | M |
-| **2. Porthor** | Upload API (chunked, size limits, sha256 dedupe), deterministic ingest, error capture, mapping proposals with approval | Replay eval 100%; injected faults 100% in review; an unknown dialect is approved and replayed end to end | M |
-| **2b. Cennad** | SMTP receiver, M365 envelope-report and Google BCC parsers, normaliser, raw `.eml` store, `mail-journal` + DLQ, Porthor streaming consumer | Synthetic journal stream 100% normalised or dead-lettered; Message-ID idempotency; journal reports from an M365 test tenant parsed with BCC recipients | M |
-| **3. Echdynnwr + Relate** | **Spike first**; contract registry; read-only `.rl` with TTL; fallback path | An agent can't read out-of-contract properties (test plus Aura role); extracts reproducible by hash | M |
-| **4. Didolwr** | Trigger tagger, LLM ethics judge, routing, pseudonymisation | Didolwr evals in §8 met; prompt-injection fixtures pass | L |
-| **5. Review console** | Queues, case view, four-eyes, decision audit | All decision types recorded with rationale; nothing becomes `current` dirty without two reviewers | M |
-| **6. Gwyliwr** | Scheduled scans, metrics, graph signals, alerts, dashboards | Scenario subjects top-3; hidden links recovered; no content in its extracts | L |
-| **7. Ymchwiliad** | Cases, assignment and conflict checks, identity reveal, timeline and graph, flags vocabulary, hash-chained audit, Holwr, SAR mock and approval flow | Both synthetic scenarios investigated end to end to a mock SAR reference; audit chain verifies; access tests pass | L |
-| **8. Crynhoi + evals at scale** | Case packs; online evals; fairness dashboards | Reviewers rate packs; agreement and drift dashboards live | M |
-| **9. Hardening and pilot** | Pen test, retention jobs, DR, runbooks; pilot on one CyberScallywags-provided channel | Governance gate passed; pilot review with stakeholders | M |
-
-**Generator follow-ups** to make the evals sharper:
-- an adversarial fixture set (prompt injection inside message bodies, obfuscated triggers such as `c4sh` and `d e l e t e`)
-- more Welsh-language dirty and question content
-- a SIM-swap scenario once identity-over-time lands
-- a reference calendar of client-sensitive dates for Gwyliwr
-
----
-
-## 11. Decisions needed from you
-
-| # | Decision | Recommendation |
-|---|---|---|
-| D1 | Channels in scope for real data | CyberScallywags-provided accounts and devices only |
-| D2 | Code of ethics text and clause ids | Adopt formally; replace `code_of_ethics.DRAFT.md` |
-| D3 | Trigger list owner and change process | Compliance lead; PR-reviewed; versioned |
-| D4 | Aura tier and region | Business Critical, UK region (needed for fine-grained roles, ABAC and CDC) |
-| D5 | Model hosting for content | Local model for Didolwr and Crynhoi; frontier models only for content-free tasks or under zero retention |
-| D6 | Queue | arq + Redis (simplest); Kafka if streaming ingest from Sgwrs is wanted |
-| D7 | Review console | Streamlit (fast, consistent with Llyw and Negesydd) |
-| D8 | "Employee" definition | Include volunteers and members only if the DPIA and consultation support it |
-| D9 | Retention periods | Set with the DPIA |
-| D10 | Relate adoption | Go/no-go after the phase-3 spike; fallback stays ready |
-| D11 | Who receives escalations | Named role plus legal adviser; never automated |
-| D12 | Appoint a nominated officer? | Yes, with a deputy, knowing the duties that come with the role |
-| D13 | Reporting routes to mock | NCA SAR · police referral · FCA report; the real integration route to be confirmed |
-| D14 | Investigator conflict rules | Not self, own team or line manager; no shared household devices; reviewed by the nominated officer |
-| D16 | Mail platform(s) | Microsoft 365 envelope journaling if available (full BCC visibility); Google Workspace BCC routing otherwise |
-| D17 | Inbound mail | Out of scope initially; sent mail only, as asked ("from company equipment") |
-| D18 | Privileged and personal mail | Legal-adviser domain allowlist → sealed queue, never tagged by agents; personal-mail policy in the DPIA |
-| D19 | Raw mail storage | S3-compatible object storage (for example MinIO), encrypted, retention matched to the record |
-| D15 | Flags vocabulary | Start with §7.3; changes PR-reviewed and versioned like the trigger list |
-
----
-
-## 12. Synthetic data available now (from Sgwrs)
-
-`scripts/generate_traffic.py` produces these, already built and tested:
-
-- **Normal traffic.** For example: 150 employees, 450 external contacts, 60 days → 103k records, 307 files, 49 MB in about 12 s. Formats are mixed (JSONL, CSV, Parquet), 30% of files use source-system dialects, and 0.2% of rows carry injected faults.
-- **Insider dealing.** A Partnerships employee on the insider list tips a friend before the fictional Tonnau Ynni plc takeover. The friend trades via a broker and tips a relative. The data shows channel switching to landline, a contact spike and concealment requests.
-- **Drug supply.** An Events employee runs a line from unregistered PAYG phones, rotates the number mid-period, checks in from their own mobile, and arranges one drop via their work laptop and the hackspace.
-- **Email (JSON only):** normal mail from company accounts (about 5 per employee per weekday), benign trigger-word mail, the insider's board pack forwarded to a personal webmail account (same attachment SHA-256), a channel-switch email to the tippee, and the drug-supply locker email from a work laptop. 30% of files are Microsoft Graph-shaped exports, and email faults (bad addresses, external senders, no recipients, bad timestamps) are injected. `scripts/stream_email.py` replays a run or generates live mail as a JSON stream.
-- **Ground truth for every record:** expected tag, clauses, typology and subjects. It also includes the injected faults, the hidden links (TIPPED, TRADED_VIA, CONTROLS, SAME_LINE, EXFILTRATED) and a manifest with a SHA-256 hash per file.
-- **Safety:** every identifier comes from a reserved range (Ofcom drama numbers, the ITU test IMSI range, documentation IPs). Every run folder contains `README.SYNTHETIC.txt`. The scenarios stay at the level of patterns, with no operational detail.

@@ -1,4 +1,4 @@
-"""Crynhoi ("summarise"): the evidence pack a reviewer needs for one subject and window (plan §5.5).
+"""Crynhoi ("summarise"): the evidence pack a reviewer needs for one subject and window (design §5.5).
 
 A pack is assembled by code from the ``crynhoi.case-pack.v1`` extract: the timeline of flagged
 records, every tag on them with its evidence span, and the provenance of each back to a source-file
@@ -7,8 +7,6 @@ should consider. It is never asked for an outcome, and a narrative that offers o
 With no model configured the pack is still produced, with a fixed list of alternatives.
 
 The pack contains record text, so it is stored encrypted and read through the review API.
-
-Implements: UND-080
 """
 
 import json
@@ -208,7 +206,7 @@ async def load_pack(runner: CypherRunner, cipher: FieldCipher, pack_id: str) -> 
 
 
 async def rate_pack(runner: CypherRunner, pack_id: str, reviewer: str, rating: int, comment: str = "") -> None:
-    """A reviewer's rating of a pack (1 to 5): the feedback loop for Crynhoi (plan §10 phase 8)."""
+    """A reviewer's rating of a pack (1 to 5): the feedback loop for Crynhoi (design §10 phase 8)."""
     if not 1 <= rating <= 5:
         raise ValueError("rating is 1 to 5")
     found = await runner.run(

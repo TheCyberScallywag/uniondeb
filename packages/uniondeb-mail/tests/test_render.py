@@ -1,7 +1,4 @@
-"""Render → parse round trips for the three journal shapes, and what attachment filler means.
-
-Verifies: UND-025
-"""
+"""Render → parse round trips for the three journal shapes, and what attachment filler means."""
 
 import hashlib
 

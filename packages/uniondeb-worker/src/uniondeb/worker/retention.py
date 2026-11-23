@@ -7,8 +7,6 @@ every decision about it remain auditable after its words are gone.
 
 Nothing tied to a case with an active ``legal_hold`` flag is touched. Each run is a ``Retention``
 activity that used the records it purged, so the purge itself is in provenance.
-
-Implements: UND-090
 """
 
 import os

@@ -19,8 +19,6 @@ mailbox, and the sending device is attached later only when it can be shown.
 Body text is given LF line endings, loses its trailing newlines (MIME cannot tell ``"a"`` from
 ``"a\\n"``) and is cut at the
 contract's 200 000 characters; the raw message in object storage stays complete.
-
-Implements: UND-025
 """
 
 import hashlib

@@ -1,4 +1,4 @@
-"""Cases: how one opens, who may work it, and when the subject's name is shown (plan §7.1).
+"""Cases: how one opens, who may work it, and when the subject's name is shown (design §7.1).
 
 Investigators do not browse the population. A case exists only because a reviewer escalated an
 alert or the nominated officer opened one with a written reason; the nominated officer assigns it,
@@ -11,8 +11,6 @@ case is audited before it is written, so the log can hold an attempt whose write
 provenance activity is stored as ``failed``) but never misses a change; only opening a case writes
 first, because the event links to the case and a case nobody is assigned to is inert. A case the
 actor may not see raises the same ``NotFound`` as one that does not exist.
-
-Implements: UND-070
 """
 
 import secrets
@@ -359,6 +357,10 @@ class CaseService:
             raise CaseError(f"outcome must be one of {', '.join(OUTCOMES)}")
         retention_review = required(retention_review, "retention review")
         case = await self._require_open(case_id, actor, "case.close")
+        if outcome == "sar_submitted" and not await self.runner.run(
+            "MATCH (:Case {id: $id})-[:REPORTED]->(s:SarSubmission) RETURN s.id AS id LIMIT 1", {"id": case_id}
+        ):
+            raise CaseError("no SAR has been submitted for this case: approve a draft first, or choose another outcome")
         closed = {"state": "closed", "outcome": outcome, "closed_by": actor.id, "closed_at": now_iso()}
         closed["retention_review"] = retention_review
         await self.audit.append(

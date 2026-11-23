@@ -1,4 +1,4 @@
-// Implements: UND-013 — system-of-record identity constraints (plan §4)
+// System-of-record identity constraints (design §4)
 CREATE CONSTRAINT source_file_sha256 IF NOT EXISTS FOR (n:SourceFile) REQUIRE n.sha256 IS UNIQUE;
 CREATE CONSTRAINT record_key IF NOT EXISTS FOR (n:Record) REQUIRE n.key IS UNIQUE;
 CREATE CONSTRAINT device_id IF NOT EXISTS FOR (n:Device) REQUIRE n.id IS UNIQUE;

@@ -1,4 +1,4 @@
-"""Routing: what the trigger hits and the judgement together mean for a record (plan §5.3 step 3).
+"""Routing: what the trigger hits and the judgement together mean for a record (design §5.3 step 3).
 
 Pure code, so the rules can be read and tested in one place:
 
@@ -7,8 +7,6 @@ Pure code, so the rules can be read and tested in one place:
   until two reviewers confirm it;
 - a ``none`` judgement changes nothing. There is no path by which a model result lowers a tag:
   ``Routed`` has no way to express "clean because the model said so".
-
-Implements: UND-042
 """
 
 from dataclasses import dataclass

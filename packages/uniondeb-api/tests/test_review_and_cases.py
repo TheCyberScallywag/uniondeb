@@ -1,7 +1,4 @@
-"""Review to investigation, end to end: four-eyes, pseudonymity, case access, audit, mock SAR.
-
-Verifies: UND-050, UND-051, UND-062, UND-070, UND-071, UND-072, UND-073, UND-074, UND-075, UND-080, UND-082
-"""
+"""Review to investigation, end to end: four-eyes, pseudonymity, case access, audit, mock SAR."""
 
 import json
 

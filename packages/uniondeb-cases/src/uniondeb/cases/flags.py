@@ -1,4 +1,4 @@
-"""Flags from a controlled, versioned vocabulary, and the legal hold they can place (plan §7.3).
+"""Flags from a controlled, versioned vocabulary, and the legal hold they can place (design §7.3).
 
 A flag is a node saying who set which label on what, when, why and under which case, so its
 history is never lost: a flag is not edited, and clearing one only marks it inactive with who and
@@ -10,8 +10,6 @@ Three audiences read flags and get different things. Inside the case, everything
 reason: person and case flags must not tip anyone off. Gwyliwr (``device_hypotheses``) gets device
 flags only, marked as the hypotheses they are. A case with an active ``legal_hold`` puts every
 record involving the subject's devices on hold for the retention job.
-
-Implements: UND-072
 """
 
 import uuid
@@ -284,7 +282,8 @@ class FlagService:
     async def records_on_hold(self) -> set[str]:
         """Keys of every record the retention job must not purge.
 
-        A case with a live ``legal_hold`` holds each record involving a device its subject uses,
+        A case with a live ``legal_hold`` holds each record involving a device its subject uses and each
+        email sent from an address that belongs to them,
         within the case window when it has one.
         """
         rows = await self.runner.run(
@@ -293,7 +292,9 @@ class FlagService:
         held: set[str] = set()
         for case in {r["c"]["id"]: r["c"] for r in rows if Flag.model_validate(r["f"]).live}.values():
             records = await self.runner.run(
-                "MATCH (:Case {id: $id})-[:SUBJECT]->(:Person)-[:USES]->(:Device)<-[:FROM|TO|ON|SENT_FROM]-(r:Record) "
+                "CALL { MATCH (:Case {id: $id})-[:SUBJECT]->(:Person)-[:USES]->(:Device)<-[:FROM|TO|ON|SENT_FROM]-(r:Record) "
+                "RETURN r UNION "  # mail journaled without a device reaches its sender through the address alone
+                "MATCH (:Case {id: $id})-[:SUBJECT]->(:Person)<-[:BELONGS_TO]-(:EmailAddress)<-[:FROM]-(r:Record) RETURN r } "
                 "RETURN DISTINCT r.key AS key, r.occurred_at AS at",
                 {"id": case["id"]},
             )

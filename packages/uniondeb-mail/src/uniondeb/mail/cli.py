@@ -1,10 +1,7 @@
 """``uniondeb cennad``: run the journal receiver, or parse one ``.eml`` to see what it would publish.
 
-    uniondeb cennad serve                  # settings from CENNAD_* (see uniondeb.mail.settings)
-    uniondeb cennad parse report.eml       # canonical JSON on stdout, or the parse error; exit 1
-
-Implements: UND-025
-Implements: UND-026
+uniondeb cennad serve                  # settings from CENNAD_* (see uniondeb.mail.settings)
+uniondeb cennad parse report.eml       # canonical JSON on stdout, or the parse error; exit 1
 """
 
 import argparse

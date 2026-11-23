@@ -1,7 +1,4 @@
-"""Opening, assigning (each conflict rule), access without existence leaks, and identity reveal.
-
-Verifies: UND-070
-"""
+"""Opening, assigning (each conflict rule), access without existence leaks, and identity reveal."""
 
 import pytest
 
@@ -253,6 +250,8 @@ async def test_close_needs_officer_outcome_and_retention_review(case, cases, gra
         await cases.close(case.id, OFFICER, "abandoned", "reviewed")
     with pytest.raises(ReasonRequired, match="retention review"):
         await cases.close(case.id, OFFICER, "closed_no_action", "")
+    with pytest.raises(CaseError, match="no SAR has been submitted"):  # the outcome must be true of the case
+        await cases.close(case.id, OFFICER, "sar_submitted", "keep 6 years")
     assert (await node(graph, case.id))["state"] == "open"
 
     closed = await cases.close(case.id, OFFICER, "closed_conduct_process", "keep 6 years: conduct file opened")

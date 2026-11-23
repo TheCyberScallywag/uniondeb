@@ -1,7 +1,4 @@
-"""Migrations: parsing, ordering, ledger, idempotency and drift.
-
-Verifies: UND-013
-"""
+"""Migrations: parsing, ordering, ledger, idempotency and drift."""
 
 from dataclasses import replace
 

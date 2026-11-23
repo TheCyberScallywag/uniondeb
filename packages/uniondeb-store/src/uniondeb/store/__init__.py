@@ -1,7 +1,4 @@
-"""Uniondeb store: connection settings, Cypher runners and migrations for the AuraDB system of record.
-
-Implements: UND-013
-"""
+"""Uniondeb store: connection settings, Cypher runners and migrations for the AuraDB system of record."""
 
 from uniondeb.store.migrations import Migration, MigrationDriftError, load_migrations, migrate, status
 from uniondeb.store.provenance import Lineage, ProvenanceError, Tarddiad

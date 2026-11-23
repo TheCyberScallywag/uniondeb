@@ -8,8 +8,6 @@
 The activity runs inside a Logfire span and stores its trace id. It is written when the block
 exits, successful or not; a failed activity is stored with ``status: failed`` and keeps whatever it
 used. Every referenced entity must already exist, so provenance never points at nothing.
-
-Implements: UND-015
 """
 
 from collections import defaultdict
