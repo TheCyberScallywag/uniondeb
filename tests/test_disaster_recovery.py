@@ -56,6 +56,21 @@ async def test_backup_restores_to_an_identical_graph_with_a_verifying_audit_chai
         await target.close()
 
 
+async def test_timestamps_finer_than_a_microsecond_survive(empty_store, tmp_path):
+    """Nanosecond timestamps come back from the engine as its own type, not ``datetime`` (always on
+    Linux, where the clock is that fine): they must be backed up and restored exactly."""
+    stamp = "2026-09-01T10:00:00.123456789Z"
+    await empty_store.run("CREATE (:Scan {id: 's1', at: datetime($t)})", {"t": stamp})
+    summary = await backup(empty_store, tmp_path / "b.gz")
+    target = RelateRunner.open(":memory:")
+    try:
+        assert await restore(target, tmp_path / "b.gz") == summary
+        [row] = await target.run("MATCH (s:Scan {id: 's1'}) RETURN toString(s.at) AS at")
+        assert row["at"] == stamp
+    finally:
+        await target.close()
+
+
 async def test_a_damaged_backup_is_refused(small_store, tmp_path):
     file = tmp_path / "b.gz"
     await backup(small_store, file)
