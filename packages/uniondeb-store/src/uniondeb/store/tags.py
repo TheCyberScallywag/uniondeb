@@ -1,4 +1,4 @@
-"""Append-only tags on records (plan §4, §5.3).
+"""Append-only tags on records (design §4, §5.3).
 
 A record's tag history is a chain of ``Tag`` nodes: a new tag is created, the one it replaces is
 marked ``current: false`` with ``superseded_by``, and nothing else about an old tag ever changes.
@@ -9,8 +9,6 @@ so they hold whichever agent or endpoint is calling:
 - a model (``method: llm``) can never lower a record's current tag, and can never tag a record
   with trigger hits ``clean``;
 - only a human decision makes ``dirty`` current: agents can only *propose* it.
-
-Implements: UND-042
 """
 
 import uuid

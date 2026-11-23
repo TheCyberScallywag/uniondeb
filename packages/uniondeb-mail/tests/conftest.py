@@ -1,8 +1,4 @@
-"""Shared fixtures for the Cennad tests: sample events, a local store and an in-memory publisher.
-
-Verifies: UND-025
-Verifies: UND-026
-"""
+"""Shared fixtures for the Cennad tests: sample events, a local store and an in-memory publisher."""
 
 from datetime import UTC, datetime
 from typing import Any

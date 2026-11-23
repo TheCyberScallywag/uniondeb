@@ -4,8 +4,6 @@ The pages are thin: each calls the same ``actions`` and services as the JSON API
 checks, the four-eyes rule and the audit trail cannot differ between the two. Plain HTML forms, no
 client-side state, every value escaped by the template engine. (The plan's decision D7 offered
 Streamlit or FastAPI pages; pages in the API process share its auth and need no second service.)
-
-Implements: UND-051, UND-075
 """
 
 import json
@@ -160,6 +158,7 @@ async def console_pack_view(pack_id: str, request: Request, principal: Principal
     pack = await crynhoi.load_pack(s.runner, s.cipher, pack_id)
     if pack is None:
         raise HTTPException(404)
+    await s.audit.append(principal.sub, "pack.read", target=f"CasePack:{pack_id}")
     return page("pack.html", request, principal, pack=pack)
 
 

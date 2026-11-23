@@ -2,8 +2,6 @@
 
 Settings come from ``UNIONDEB_NEO4J_*`` environment variables. ``relate:<path>`` (or
 ``relate::memory:``) selects the embedded Relate engine, used for local tests and agent extracts.
-
-Implements: UND-013
 """
 
 import os

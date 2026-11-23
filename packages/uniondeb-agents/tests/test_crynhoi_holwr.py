@@ -1,7 +1,4 @@
-"""Crynhoi packs carry evidence and never a verdict; Holwr answers only from its case extract.
-
-Verifies: UND-080, UND-073
-"""
+"""Crynhoi packs carry evidence and never a verdict; Holwr answers only from its case extract."""
 
 import json
 

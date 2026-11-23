@@ -8,9 +8,7 @@ file it used and which records it generated.
 
 Synthetic runs only ever go to the synthetic database: the loader refuses any other target.
 Rows that fail validation are counted on the ``SourceFile`` and returned; routing them to human
-review is Porthor's job (UND-022).
-
-Implements: UND-017
+review is Porthor's job.
 """
 
 import argparse

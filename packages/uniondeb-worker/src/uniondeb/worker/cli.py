@@ -1,7 +1,4 @@
-"""``uniondeb worker run|once|enqueue``.
-
-Implements: UND-024
-"""
+"""``uniondeb worker run|once|enqueue``."""
 
 import argparse
 import asyncio

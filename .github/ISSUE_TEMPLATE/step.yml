@@ -1,7 +1,0 @@
-name: Backlog step
-description: Add a step to backlog/backlog.yaml first; bootstrap_backlog.py creates the issue.
-title: "[UND-NNN] "
-body:
-  - type: markdown
-    attributes:
-      value: "Steps are generated from `backlog/backlog.yaml`. Add the step there, then run `uv run scripts/bootstrap_backlog.py`."

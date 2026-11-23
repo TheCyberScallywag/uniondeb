@@ -1,5 +1,3 @@
-"""Verifies: UND-013"""
-
 import pytest
 from pydantic import ValidationError
 

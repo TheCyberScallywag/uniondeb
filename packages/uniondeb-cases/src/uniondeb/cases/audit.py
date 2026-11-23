@@ -1,4 +1,4 @@
-"""Hash-chained, append-only audit log (plan §7.4).
+"""Hash-chained, append-only audit log (design §7.4).
 
 Every audited action, reads included, appends one ``(:AuditEvent)``. An event stores the hash of the
 event before it and its own hash over every other field, so editing, deleting, reordering or
@@ -11,8 +11,6 @@ This module has an append and reads, and nothing else: there is no update or del
 correction is a new event. The append is one Cypher statement, so an event never exists without
 its ``PREV`` link. Writers compute ``seq`` from the head they just read; the unique ``seq``
 constraint makes the loser of a race fail, and it retries against the new head.
-
-Implements: UND-071
 """
 
 import asyncio

@@ -1,9 +1,9 @@
-# Security review (UND-091)
+# Security review
 
 - Date: 2026-11-22
 - Scope: a code review of the gateway API, both consoles, the worker, the agents, Echdynnwr and the
   case domain, by the same engineer that built them.
-- **Not done: an independent penetration test.** The backlog step asks for one. This document is the
+- **Not done: an independent penetration test.** One is required before a pilot. This document is the
   input to it, not a substitute. Nothing here has been tested by a second party or against a
   deployed environment.
 

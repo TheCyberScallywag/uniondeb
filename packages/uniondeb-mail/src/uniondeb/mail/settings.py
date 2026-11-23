@@ -2,8 +2,6 @@
 
 The defaults fail closed: an empty allowlist rejects every peer, and without a certificate the
 receiver refuses to start unless plaintext is explicitly allowed (a test or a loopback demo).
-
-Implements: UND-026
 """
 
 import ipaddress

@@ -8,8 +8,6 @@ headers. Cennad adds ``raw_sha256``, the provenance anchor.
 
 ``confluent_kafka`` is an optional extra and is imported only when the first document is
 produced, so the parsers, the tests and a single-process deployment never need it.
-
-Implements: UND-026
 """
 
 import json

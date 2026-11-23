@@ -1,4 +1,4 @@
-// Implements: UND-013 — append-only tags, review queue and alerts (plan §4, §6)
+// Append-only tags, review queue and alerts (design §4, §6)
 CREATE CONSTRAINT tag_id IF NOT EXISTS FOR (n:Tag) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT review_item_id IF NOT EXISTS FOR (n:ReviewItem) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT alert_id IF NOT EXISTS FOR (n:Alert) REQUIRE n.id IS UNIQUE;

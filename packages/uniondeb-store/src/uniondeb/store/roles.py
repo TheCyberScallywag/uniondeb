@@ -1,4 +1,4 @@
-"""Aura service roles and fine-grained privileges, as code (plan §4, "Aura service accounts").
+"""Aura service roles and fine-grained privileges, as code (design §4, "Aura service accounts").
 
 Each role is a list of privileges rendered to Cypher ``GRANT``/``DENY`` against one graph. ``apply``
 reconciles the server with this file: it creates missing roles, revokes whatever each role holds
@@ -6,12 +6,10 @@ now, then grants exactly what is declared, so a privilege removed here is remove
 
 Two limits of Neo4j's model, handled elsewhere:
 - Creating a node with properties needs ``SET PROPERTY`` on that label, so "create but never edit"
-  cannot be expressed. Audit events are made tamper-evident by their hash chain (UND-071) and no
+  cannot be expressed. Audit events are made tamper-evident by their hash chain and no
   role may delete them.
 - Per-case ABAC (an investigator sees only assigned cases) is enforced in the API layer with
-  OIDC claims (UND-070); these roles set the outer bound.
-
-Implements: UND-014
+  OIDC claims; these roles set the outer bound.
 """
 
 from dataclasses import dataclass, field

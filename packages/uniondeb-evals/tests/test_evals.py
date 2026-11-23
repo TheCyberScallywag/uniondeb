@@ -1,7 +1,5 @@
 """The offline gate meets every target on a synthetic run and fails on a regression; online evals
 turn reviewer decisions into agreement and fairness numbers.
-
-Verifies: UND-081, UND-082
 """
 
 import pytest

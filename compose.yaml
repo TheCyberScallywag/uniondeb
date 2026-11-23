@@ -1,4 +1,4 @@
-# Entry point so `docker compose …` works from the repository root. Implements: UND-013
+# Entry point so `docker compose …` works from the repository root.
 # The stack itself, and its .env, live in deploy/.
 include:
   - path: deploy/compose.yml

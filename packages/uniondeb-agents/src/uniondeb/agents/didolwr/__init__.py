@@ -1,7 +1,4 @@
-"""Didolwr ("sorter"): clean, question or dirty for every record (plan §5.3).
-
-Implements: UND-040, UND-041, UND-042
-"""
+"""Didolwr ("sorter"): clean, question or dirty for every record (design §5.3)."""
 
 from uniondeb.agents.didolwr.judge import CodeOfEthics, EthicsJudge, EthicsJudgement
 from uniondeb.agents.didolwr.routing import Routed, route

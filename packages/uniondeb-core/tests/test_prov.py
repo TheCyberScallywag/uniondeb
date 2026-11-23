@@ -1,5 +1,3 @@
-"""Verifies: UND-015"""
-
 import uuid
 
 import pytest

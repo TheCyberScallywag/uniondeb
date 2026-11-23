@@ -1,7 +1,4 @@
-"""A restore drill: back up a working system, restore it elsewhere, prove nothing changed.
-
-Verifies: UND-092
-"""
+"""A restore drill: back up a working system, restore it elsewhere, prove nothing changed."""
 
 import gzip
 import json

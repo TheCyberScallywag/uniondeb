@@ -1,7 +1,5 @@
 """``uniondeb schemas export``: write JSON Schema, Frictionless Table Schema and Arrow/Parquet schema
 files for every dataset (calls, messages, handoff) and the email JSON Schema.
-
-Implements: UND-011
 """
 
 import argparse

@@ -2,7 +2,6 @@
 
 - Status: accepted
 - Date: 2026-11-22
-- Step: UND-024
 - Evidence: `docs/security-review.md`
 
 ## Context

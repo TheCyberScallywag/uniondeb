@@ -1,8 +1,4 @@
-"""``uniondeb cennad parse``: canonical JSON for a good file, the reason and exit 1 for a bad one.
-
-Verifies: UND-025
-Verifies: UND-026
-"""
+"""``uniondeb cennad parse``: canonical JSON for a good file, the reason and exit 1 for a bad one."""
 
 import json
 

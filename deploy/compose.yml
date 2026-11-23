@@ -1,4 +1,4 @@
-# Development stack for Uniondeb. Implements: UND-013
+# Development stack for Uniondeb.
 # Neo4j Enterprise (evaluation licence) stands in for AuraDB Business Critical, so roles,
 # fine-grained privileges and multiple databases behave as they will in Aura.
 #
@@ -102,6 +102,14 @@ services:
       UNIONDEB_DATA_DIR: /var/lib/uniondeb
       UNIONDEB_EXTRACT_ROOT: /run/uniondeb/extracts
       LOGFIRE_TOKEN: "${LOGFIRE_TOKEN:-}"
+      # Optional, from deploy/.env: models for the agents that use one, and OIDC in place of the development secret.
+      UNIONDEB_DIDOLWR_MODEL: "${UNIONDEB_DIDOLWR_MODEL:-}"
+      UNIONDEB_PORTHOR_MODEL: "${UNIONDEB_PORTHOR_MODEL:-}"
+      UNIONDEB_CRYNHOI_MODEL: "${UNIONDEB_CRYNHOI_MODEL:-}"
+      UNIONDEB_HOLWR_MODEL: "${UNIONDEB_HOLWR_MODEL:-}"
+      UNIONDEB_OIDC_JWKS_URL: "${UNIONDEB_OIDC_JWKS_URL:-}"
+      UNIONDEB_OIDC_ISSUER: "${UNIONDEB_OIDC_ISSUER:-}"
+      UNIONDEB_OIDC_AUDIENCE: "${UNIONDEB_OIDC_AUDIENCE:-}"
     command: ["api", "serve", "--host", "0.0.0.0", "--port", "8000"]
     ports:
       - "127.0.0.1:${UNIONDEB_API_PORT:-8000}:8000"

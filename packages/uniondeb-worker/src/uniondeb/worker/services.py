@@ -1,7 +1,4 @@
-"""What a worker or the API needs to do its job, built once from the environment.
-
-Implements: UND-024
-"""
+"""What a worker or the API needs to do its job, built once from the environment."""
 
 import hashlib
 import os
@@ -99,8 +96,8 @@ class Services:
         if path := env.get("UNIONDEB_CALENDAR"):
             calendar = [SensitiveDate.model_validate(e) for e in yaml.safe_load(Path(path).read_text()) or []]
         anchor_key = env.get("UNIONDEB_AUDIT_ANCHOR_KEY")
-        if env.get("UNIONDEB_SYNTHETIC") == "1":
-            store.setdefault("synthetic", True)
+        if env.get("UNIONDEB_SYNTHETIC") == "1" and store.get("synthetic") is None:
+            store["synthetic"] = True  # a caller passing synthetic=None means "the environment decides"
         async with open_runner(StoreSettings.from_env(env, **store)) as runner:
             yield cls(
                 runner=runner,

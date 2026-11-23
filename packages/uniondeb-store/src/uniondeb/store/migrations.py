@@ -4,8 +4,6 @@ Migrations live in ``uniondeb/store/migrations/NNNN_<name>.cypher``; statements 
 line ending in ``;``. Each applied migration is recorded as ``(:Migration {version, name, checksum,
 applied_at})``. A recorded migration whose file has since changed is drift and stops the run:
 fix forward with a new migration instead of editing an applied one.
-
-Implements: UND-013
 """
 
 import hashlib

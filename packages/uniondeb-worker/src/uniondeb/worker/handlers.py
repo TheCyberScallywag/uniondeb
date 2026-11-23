@@ -1,7 +1,4 @@
-"""What each kind of job does. Every handler is idempotent, because jobs are retried.
-
-Implements: UND-024, UND-062, UND-090
-"""
+"""What each kind of job does. Every handler is idempotent, because jobs are retried."""
 
 from collections.abc import Awaitable, Callable
 from datetime import datetime
@@ -65,7 +62,7 @@ async def retention(s: Services, args: dict[str, Any]) -> dict[str, Any]:
 
 
 async def audit_verify(s: Services, args: dict[str, Any]) -> dict[str, Any]:
-    """Nightly: verify the audit chain, then anchor its head outside the database (plan §7.4)."""
+    """Nightly: verify the audit chain, then anchor its head outside the database (design §7.4)."""
     v = await s.audit.verify()
     if not v.ok:
         raise RuntimeError(f"audit chain broken at seq {v.broken_at}: {v.reason}")  # dead job → runbook

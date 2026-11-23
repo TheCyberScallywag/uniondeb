@@ -1,7 +1,4 @@
-"""Didolwr: deterministic triggers, a judge that can only propose, and routing that never downgrades.
-
-Verifies: UND-040, UND-041, UND-042, UND-043
-"""
+"""Didolwr: deterministic triggers, a judge that can only propose, and routing that never downgrades."""
 
 import csv
 import unicodedata

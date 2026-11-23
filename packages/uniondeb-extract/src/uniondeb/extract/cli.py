@@ -1,7 +1,4 @@
-"""``uniondeb extract contracts|reap``.
-
-Implements: UND-031, UND-032
-"""
+"""``uniondeb extract contracts|reap``."""
 
 import argparse
 import asyncio

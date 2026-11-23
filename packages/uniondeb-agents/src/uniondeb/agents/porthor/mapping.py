@@ -1,4 +1,4 @@
-"""Mapping proposals for columns the alias layer does not know (plan §5.1, "New dialects").
+"""Mapping proposals for columns the alias layer does not know (design §5.1, "New dialects").
 
 A model looks at the unknown column names, with the *shape* of a few example values (letters and
 digits masked, so no content or identifier leaves), and the list of canonical fields. It can do one
@@ -8,8 +8,6 @@ field becomes a ``MappingProposal`` with a review item; anything else the model 
 
 Approval is a human decision in the review queue. Its effect extends the alias registry to version
 N+1 and replays the file. The model never changes code, schemas or the registry.
-
-Implements: UND-023
 """
 
 import json

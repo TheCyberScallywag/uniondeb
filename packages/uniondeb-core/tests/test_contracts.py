@@ -1,7 +1,4 @@
-"""Record contracts enforce the domain rules.
-
-Verifies: UND-011
-"""
+"""Record contracts enforce the domain rules."""
 
 from datetime import UTC, datetime
 

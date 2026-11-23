@@ -1,4 +1,4 @@
-"""Holwr ("questioner"): answers an investigator's questions about one case (plan §7.2, §7.6).
+"""Holwr ("questioner"): answers an investigator's questions about one case (design §7.2, §7.6).
 
 Holwr is given a read-only extract of a single case and one tool: run a Cypher query on it. It
 cannot reach the system of record, another case, or anything outside the extract. Its limits are
@@ -12,8 +12,6 @@ enforced in code, not asked for in a prompt:
 It can also draft a SAR narrative for the investigator to edit. It has a ``submit_sar`` tool only so
 that an attempt to use it is visible: the tool requires approval, Holwr cannot grant it, and the
 request is recorded and discarded. Submission is a nominated officer's act (``uniondeb.cases.sar``).
-
-Implements: UND-073
 """
 
 import json

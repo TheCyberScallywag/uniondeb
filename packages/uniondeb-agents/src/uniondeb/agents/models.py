@@ -1,11 +1,9 @@
 """Which model each agent uses.
 
 Content-bearing agents (Didolwr, Crynhoi, Holwr) default to a locally hosted model; a frontier
-model is an explicit opt-in per agent (plan §5, decision D5). The model is named by
+model is an explicit opt-in per agent (design §5, decision D5). The model is named by
 ``UNIONDEB_<AGENT>_MODEL`` in Pydantic AI's ``provider:model`` form. With nothing configured an
 agent that needs a model refuses to run, so no content is ever sent to a default provider by accident.
-
-Implements: UND-023, UND-041
 """
 
 import os

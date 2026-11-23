@@ -1,7 +1,4 @@
-"""The audit chain: appends, concurrent appends, every kind of tampering, anchors, no edit path.
-
-Verifies: UND-071
-"""
+"""The audit chain: appends, concurrent appends, every kind of tampering, anchors, no edit path."""
 
 import ast
 import asyncio

@@ -1,7 +1,4 @@
-"""``uniondeb evals gate|online``.
-
-Implements: UND-081, UND-082
-"""
+"""``uniondeb evals gate|online``."""
 
 import argparse
 import asyncio

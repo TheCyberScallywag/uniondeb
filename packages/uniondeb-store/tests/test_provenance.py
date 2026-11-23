@@ -1,7 +1,4 @@
-"""Tarddiad on an embedded Relate store: activities, failures and lineage back to the file hash.
-
-Verifies: UND-015
-"""
+"""Tarddiad on an embedded Relate store: activities, failures and lineage back to the file hash."""
 
 import logfire
 import pytest

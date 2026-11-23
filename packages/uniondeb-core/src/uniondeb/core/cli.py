@@ -1,7 +1,5 @@
 """The ``uniondeb`` command line. Packages add subcommands through the ``uniondeb.cli`` entry-point
 group: each entry point names a ``register(subparsers)`` function.
-
-Implements: UND-011
 """
 
 import argparse

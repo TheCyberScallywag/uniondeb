@@ -7,8 +7,6 @@ object) and atomic (a reader never sees half a message), and files are private t
 account (0600).
 
 ``ObjectStore`` is deliberately small so an S3/MinIO adapter can replace ``LocalObjectStore``.
-
-Implements: UND-026
 """
 
 import contextlib

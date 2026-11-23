@@ -1,7 +1,4 @@
-"""Uniondeb worker: the job queue, its handlers, the scheduler and the retention job.
-
-Implements: UND-024, UND-062, UND-090
-"""
+"""Uniondeb worker: the job queue, its handlers, the scheduler and the retention job."""
 
 from uniondeb.worker.queue import Job, JobQueue
 from uniondeb.worker.services import Services, UploadStore

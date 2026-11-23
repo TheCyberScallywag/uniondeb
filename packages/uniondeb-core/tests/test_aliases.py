@@ -1,7 +1,4 @@
-"""Property-name and value variations resolve to the canonical definitions.
-
-Verifies: UND-011
-"""
+"""Property-name and value variations resolve to the canonical definitions."""
 
 import random
 from datetime import UTC, datetime

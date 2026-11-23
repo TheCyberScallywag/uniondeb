@@ -1,7 +1,4 @@
-"""Tags are append-only, a model cannot weaken a finding, and four-eyes holds for dirty.
-
-Verifies: UND-042, UND-050, UND-022
-"""
+"""Tags are append-only, a model cannot weaken a finding, and four-eyes holds for dirty."""
 
 import logfire
 import pytest

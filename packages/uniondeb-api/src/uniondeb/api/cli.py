@@ -1,7 +1,4 @@
-"""``uniondeb api serve|token``.
-
-Implements: UND-020
-"""
+"""``uniondeb api serve|token``."""
 
 import argparse
 import os

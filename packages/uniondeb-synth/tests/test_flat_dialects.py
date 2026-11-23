@@ -1,7 +1,4 @@
-"""Generated flat rows with renamed columns resolve back to the same events.
-
-Verifies: UND-012
-"""
+"""Generated flat rows with renamed columns resolve back to the same events."""
 
 import random
 from datetime import UTC, datetime

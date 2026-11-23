@@ -1,4 +1,4 @@
-"""Concern volume per employee, normalised by activity (plan §5.4).
+"""Concern volume per employee, normalised by activity (design §5.4).
 
 Raw counts flag busy people, so everything is a rate per 1,000 records. A rate is then compared
 with two baselines using a robust z-score (median and MAD, so one extreme person or day does not
@@ -6,8 +6,6 @@ move the yardstick): the person's own earlier days, and their team in the same w
 
 Inputs are rows of the ``gwyliwr.scan.v1`` extract: counts per pseudonym per day. No content is
 read, and nothing here knows who anyone is.
-
-Implements: UND-060
 """
 
 from collections import defaultdict

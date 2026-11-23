@@ -1,4 +1,4 @@
-"""The offline eval gate (plan §8): run the pipeline on a pinned synthetic run and hold it to targets.
+"""The offline eval gate (design §8): run the pipeline on a pinned synthetic run and hold it to targets.
 
 Each suite measures one row of the plan's target table against the generator's ground truth
 (``labels.csv``, ``expected_errors.csv``, ``scenarios.json``). Per-case suites are pydantic-evals
@@ -8,8 +8,6 @@ its target, which is what blocks a merge.
 By default the ethics judge is scripted from ground truth, so the gate measures the pipeline around
 the model and is deterministic. ``--model`` runs the same suites against a real model; only then do
 the dirty-recall numbers say anything about that model's judgement.
-
-Implements: UND-081
 """
 
 import csv
