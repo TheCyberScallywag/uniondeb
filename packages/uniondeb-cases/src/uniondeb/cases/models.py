@@ -4,8 +4,6 @@ An ``Actor`` is the authenticated human a request acts for; the HTTP layer build
 session and the services decide from its roles what it may do. Errors are typed so the layer above
 can map them without parsing messages. ``NotFound`` is deliberately raised both for a case that
 does not exist and for one the actor may not see, so the portal never confirms a case exists.
-
-Implements: UND-070
 """
 
 from datetime import UTC, datetime

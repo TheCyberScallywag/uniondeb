@@ -1,7 +1,4 @@
-"""Roles as code: every planned role exists and the least-privilege rules hold in the rendered Cypher.
-
-Verifies: UND-014
-"""
+"""Roles as code: every planned role exists and the least-privilege rules hold in the rendered Cypher."""
 
 import re
 

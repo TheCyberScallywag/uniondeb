@@ -3,8 +3,6 @@
 Everything else in the suite runs on the embedded engine. This proves the same Cypher (ingest,
 extract contracts, tagging, scans, review, cases, SAR, audit chain) on the database that stands in
 for AuraDB. Skipped unless ``UNIONDEB_INTEGRATION=1``.
-
-Verifies: UND-021, UND-032, UND-042, UND-061, UND-071, UND-081, UND-092
 """
 
 import os

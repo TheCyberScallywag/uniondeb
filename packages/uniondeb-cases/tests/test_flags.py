@@ -1,7 +1,4 @@
-"""The flags vocabulary, restricted flags staying inside the case, and legal hold.
-
-Verifies: UND-072
-"""
+"""The flags vocabulary, restricted flags staying inside the case, and legal hold."""
 
 from datetime import UTC, datetime, timedelta
 
@@ -213,6 +210,14 @@ async def test_legal_hold_covers_the_subjects_records_in_the_window(case, flags,
     assert await flags.is_on_hold("calls:1")
     assert not await flags.is_on_hold("handoff:3")  # the subject's, but outside the case window
     assert not await flags.is_on_hold("calls:4")  # not the subject's device
+
+    # journaled mail has no device: it reaches the subject through the sender's address alone
+    await graph.run(
+        "MATCH (p:Person {person_id: 'CS-0001'}) CREATE (a:EmailAddress {address: 'subject@cs.example'})-[:BELONGS_TO]->(p) "
+        "CREATE (:Record {key: 'email:9', occurred_at: '2026-03-10T09:00:00+00:00'})-[:FROM]->(a) "
+        "CREATE (:Record {key: 'email:10', occurred_at: '2026-06-01T09:00:00+00:00'})-[:FROM]->(a)"
+    )
+    assert await flags.records_on_hold() == {"calls:1", "calls:2", "email:9"}  # email:10 is outside the window
 
     await flags.clear_flag(hold.id, CASE_ADMIN, "settled")
     assert await flags.records_on_hold() == set()

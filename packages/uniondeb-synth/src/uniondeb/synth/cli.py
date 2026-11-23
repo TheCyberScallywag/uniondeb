@@ -1,7 +1,4 @@
-"""``uniondeb synth generate|stream`` subcommands.
-
-Implements: UND-012
-"""
+"""``uniondeb synth generate|stream`` subcommands."""
 
 import argparse
 

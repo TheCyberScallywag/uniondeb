@@ -1,12 +1,10 @@
-"""Graph signals: patterns in who contacts whom, when and how (plan §5.4, §5.2).
+"""Graph signals: patterns in who contacts whom, when and how (design §5.4, §5.2).
 
 Each detector reads only the topology tables of the ``gwyliwr.scan.v1`` extract (pseudonymous
 devices, contact edges with a time and a medium, mail metadata) and returns ``Signal``s. A signal
 names a pattern and the records that show it. Where the pattern suggests a link that the data
 cannot state as fact (this unregistered phone is controlled by that employee), the signal carries
 it as a **hypothesis** for a person to test, never as a finding.
-
-Implements: UND-061
 """
 
 from collections import defaultdict

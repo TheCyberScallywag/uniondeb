@@ -1,7 +1,4 @@
-"""SAR payload rules, the mock portal, and second-person approval.
-
-Verifies: UND-074
-"""
+"""SAR payload rules, the mock portal, and second-person approval."""
 
 import copy
 import hashlib

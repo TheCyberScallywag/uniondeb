@@ -1,7 +1,4 @@
-"""Email templates honour the trigger list; the stream normalises or dead-letters.
-
-Verifies: UND-012
-"""
+"""Email templates honour the trigger list; the stream normalises or dead-letters."""
 
 import pytest
 

@@ -1,7 +1,4 @@
-"""Extracts hold only what the contract allows, are read-only, traceable and expire.
-
-Verifies: UND-032
-"""
+"""Extracts hold only what the contract allows, are read-only, traceable and expire."""
 
 import stat
 from datetime import UTC, datetime, timedelta

@@ -1,4 +1,4 @@
-"""A security scan: extract, measure, raise alerts for people to review (plan §5.4).
+"""A security scan: extract, measure, raise alerts for people to review (design §5.4).
 
 ``analyse`` is the agent's side: it sees one metrics extract and returns pseudonymous findings.
 ``run_scan`` is the trusted side around it: it builds the extract, and afterwards resolves the
@@ -7,8 +7,6 @@ carries a name. It shows a stable pseudonym; the link to the person is followed 
 review console and the case workspace, by people with the role to do so.
 
 Every alert goes to four-eyes review. Gwyliwr decides nothing.
-
-Implements: UND-060, UND-061, UND-062
 """
 
 import hashlib

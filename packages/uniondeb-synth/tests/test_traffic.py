@@ -1,7 +1,5 @@
 """Synthetic traffic: templates honour the trigger list, scenarios are coherent, and every
 generated file replays through the ingest path except exactly the injected faults.
-
-Verifies: UND-012
 """
 
 import csv

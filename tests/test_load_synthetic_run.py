@@ -1,7 +1,4 @@
-"""End to end: generate a synthetic run, load it into an embedded store, check provenance.
-
-Verifies: UND-017
-"""
+"""End to end: generate a synthetic run, load it into an embedded store, check provenance."""
 
 import csv
 import json

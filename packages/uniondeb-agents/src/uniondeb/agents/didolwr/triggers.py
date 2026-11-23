@@ -1,4 +1,4 @@
-"""The deterministic trigger pass: whole-phrase, case-insensitive, Welsh and English (plan §5.3 step 1).
+"""The deterministic trigger pass: whole-phrase, case-insensitive, Welsh and English (design §5.3 step 1).
 
 A hit makes a record *question*, and the hits and the list version are stored on the tag, so the
 result is auditable and repeatable: the same text and the same list version always give the same
@@ -9,8 +9,6 @@ People who know a list exists disguise words. A second pass therefore reads the 
 cheapest disguises undone (digits and symbols standing in for letters, ``c4sh``; and letters spaced
 out, ``d e l e t e``) and reports what it finds as the canonical phrase. It is still a fixed
 function of the text, not a judgement.
-
-Implements: UND-040
 """
 
 import hashlib

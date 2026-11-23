@@ -4,8 +4,6 @@
 embedded Relate connection, so the same migrations and repositories run locally without a server.
 Every statement runs in its own auto-commit transaction, because Neo4j does not allow schema and
 data changes in one transaction.
-
-Implements: UND-013
 """
 
 import asyncio

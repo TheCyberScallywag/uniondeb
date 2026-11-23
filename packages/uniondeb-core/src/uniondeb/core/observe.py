@@ -4,8 +4,6 @@
 leaves the process only when a write token is present (``LOGFIRE_TOKEN``); without one, spans stay
 local, so tests and air-gapped runs never send anything. ``current_trace_id`` gives provenance the
 id of the active span so an ``Activity`` can be joined to its trace.
-
-Implements: UND-016
 """
 
 import os

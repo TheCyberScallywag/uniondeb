@@ -14,8 +14,6 @@ because storage is content-addressed and the stream is keyed by Message-ID.
 The SMTP layer (aiosmtpd) adds what a journaling endpoint on the internet needs: a sender-IP
 allowlist that rejects everyone when empty, a message size limit, and STARTTLS required unless
 plaintext is explicitly allowed.
-
-Implements: UND-026
 """
 
 import asyncio

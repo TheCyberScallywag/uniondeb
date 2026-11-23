@@ -14,8 +14,6 @@ other datasets:
 All domains are reserved for documentation (RFC 2606): the company is
 ``cyberscallywags.example``, external contacts use ``example.org`` / ``example.net``, and
 personal webmail uses ``mail.example`` and ``post.example``.
-
-Implements: UND-011
 """
 
 import html

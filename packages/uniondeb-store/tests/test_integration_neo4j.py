@@ -1,7 +1,4 @@
-"""Against a real Neo4j Enterprise (CI service) — the same migrations, the same ledger.
-
-Verifies: UND-013
-"""
+"""Against a real Neo4j Enterprise (CI service) — the same migrations, the same ledger."""
 
 import pytest
 
@@ -20,10 +17,7 @@ async def test_migrations_on_enterprise(neo4j_runner):
 
 
 async def test_metrics_role_cannot_read_content(neo4j_runner):
-    """Acceptance for UND-014: a user holding svc_extract_metrics sees records but not their content.
-
-    Verifies: UND-014
-    """
+    """A user holding svc_extract_metrics sees records but not their content."""
     from neo4j import AsyncGraphDatabase
 
     from uniondeb.store import StoreSettings, roles

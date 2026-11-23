@@ -14,8 +14,6 @@ Insider-dealing and drug-supply content stays at the level of patterns used in p
 compliance and safeguarding training material: coded phrasing, channel switching,
 secrecy. It contains no operational detail. All people, the company ``Tonnau Ynni plc``,
 its ticker and the project are fictional.
-
-Implements: UND-012, UND-043
 """
 
 import re

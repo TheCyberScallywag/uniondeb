@@ -1,7 +1,4 @@
-"""The JSON API: uploads and jobs, review queues, write-back, dashboards, cases, audit.
-
-Implements: UND-020, UND-024, UND-050, UND-062, UND-070, UND-082
-"""
+"""The JSON API: uploads and jobs, review queues, write-back, dashboards, cases, audit."""
 
 from pathlib import PurePath
 from typing import Any
@@ -160,10 +157,11 @@ async def alert_pack(alert_id: str, principal: Principal = Depends(reviewer), s:
 
 
 @router.get("/review/packs/{pack_id}")
-async def pack(pack_id: str, _: Principal = Depends(reviewer), s: Services = S) -> crynhoi.CasePack:
+async def pack(pack_id: str, principal: Principal = Depends(reviewer), s: Services = S) -> crynhoi.CasePack:
     found = await crynhoi.load_pack(s.runner, s.cipher, pack_id)
     if found is None:
         raise HTTPException(404, "not found")
+    await s.audit.append(principal.sub, "pack.read", target=f"CasePack:{pack_id}")
     return found
 
 

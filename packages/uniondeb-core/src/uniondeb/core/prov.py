@@ -4,8 +4,6 @@ An ``Activity`` used some entities, generated others, and was associated with on
 at a given version, with the model, prompt version and config versions it ran under, and the
 Logfire trace id. Entities are referred to by label and natural key, never by internal node id,
 so provenance survives export, extracts and restores.
-
-Implements: UND-015
 """
 
 import re
@@ -16,7 +14,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-# Natural key of each entity label (plan §4). Lineage walks these, so every entity label is here.
+# Natural key of each entity label (design §4). Lineage walks these, so every entity label is here.
 KEY_PROPERTIES: dict[str, str] = {
     "SourceFile": "sha256",
     "Record": "key",

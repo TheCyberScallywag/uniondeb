@@ -1,5 +1,3 @@
-"""Verifies: UND-016"""
-
 import logfire
 import pytest
 

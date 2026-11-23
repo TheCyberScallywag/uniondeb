@@ -8,8 +8,6 @@
   impossible timestamps, unidentifiable devices, conflicting aliases, duplicates). Each
   is recorded in ``ground_truth/expected_errors.csv`` so the human-review path can be
   evaluated too.
-
-Implements: UND-012
 """
 
 import csv

@@ -16,8 +16,6 @@ Output (everything is SYNTHETIC; see README.SYNTHETIC.txt in the run folder):
   ground_truth/expected_errors.csv injected faults the ingest agent must send to human review
   ground_truth/scenarios.json      actors, timeline and hidden links per scenario
   manifest.json                    every file with sha256, rows, format, dialect (provenance seed)
-
-Implements: UND-012, UND-043
 """
 
 import argparse

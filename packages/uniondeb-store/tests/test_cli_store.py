@@ -1,5 +1,3 @@
-"""Verifies: UND-013"""
-
 import json
 
 from uniondeb.core.cli import main

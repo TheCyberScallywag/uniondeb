@@ -1,4 +1,4 @@
-"""The ethics pass: does this text describe conduct contrary to the code of ethics? (plan §5.3 step 2)
+"""The ethics pass: does this text describe conduct contrary to the code of ethics? (design §5.3 step 2)
 
 The judge is a Pydantic AI agent with one typed output. It sees the text and a pseudonymised
 context line ("A (employee, mobile) → B (external, mobile), SMS, 21:40"), never a name or a number.
@@ -8,8 +8,6 @@ as a JSON value, the instructions say so, and nothing the model returns is acted
 validates: clause ids must exist, and the evidence span must be a quotation from the text. Whatever
 the model says, it can only add a *proposal* for human review; routing (``routing.py``) and the tag
 rules (``uniondeb.store.tags``) make it impossible for it to clear a trigger hit.
-
-Implements: UND-041
 """
 
 import json

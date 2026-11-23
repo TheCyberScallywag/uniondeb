@@ -1,7 +1,4 @@
-"""Journal parsers: the three shapes, envelope and BCC visibility, bodies, attachments, failures.
-
-Verifies: UND-025
-"""
+"""Journal parsers: the three shapes, envelope and BCC visibility, bodies, attachments, failures."""
 
 import hashlib
 from datetime import UTC, datetime

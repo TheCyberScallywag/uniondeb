@@ -1,4 +1,4 @@
-"""Suspicious Activity Reports: the payload, a mock portal, and second-person approval (plan §7.5).
+"""Suspicious Activity Reports: the payload, a mock portal, and second-person approval (design §7.5).
 
 ``SarPayload`` holds what the NCA's SAR Portal guidance asks for: structured subject fields where
 anything not known is the literal ``UNKNOWN`` (never a blank or a symbol), and a reason for
@@ -12,8 +12,6 @@ reference without touching the network. One person drafts and a different person
 names are stored, and the case gets the ``sar_submitted`` flag. The reference is written to the
 audit log before the copy is stored, so a receipt is never lost to a failed write. Submissions
 are readable by nominated officers and auditors only.
-
-Implements: UND-074
 """
 
 import hashlib

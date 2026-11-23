@@ -8,8 +8,6 @@ query latency and memory for a Didolwr-style content extract cut from a loaded s
 
 The source store stands in for Aura (no Aura in this environment); the extract side, which is
 what an agent touches, is measured for real. Results feed docs/adr/0002-relate-agent-extracts.md.
-
-Implements: UND-030
 """
 
 import argparse

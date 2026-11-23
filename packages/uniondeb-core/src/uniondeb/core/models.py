@@ -2,8 +2,6 @@
 
 Every ingest path (file upload, mail journal stream) validates against these models, through
 the alias layer in ``uniondeb.core.resolve``.
-
-Implements: UND-011
 """
 
 from datetime import UTC, datetime

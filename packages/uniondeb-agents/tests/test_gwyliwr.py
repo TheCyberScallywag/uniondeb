@@ -1,7 +1,4 @@
-"""Gwyliwr: activity-normalised metrics, graph signals, both scenario subjects ranked, no content read.
-
-Verifies: UND-060, UND-061, UND-062
-"""
+"""Gwyliwr: activity-normalised metrics, graph signals, both scenario subjects ranked, no content read."""
 
 import json
 from datetime import UTC, datetime

@@ -9,8 +9,6 @@ A job is claimed by writing a lock property first and re-checking its state afte
 cannot both take it. A failed job is retried with exponential backoff until ``max_attempts``, then
 parked as ``dead`` for a person to look at. A job whose worker died is requeued after a timeout.
 Handlers must therefore be idempotent, which every pipeline step is.
-
-Implements: UND-024
 """
 
 import json

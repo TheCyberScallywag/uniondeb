@@ -1,4 +1,4 @@
-"""Human review queues and decisions (plan §6).
+"""Human review queues and decisions (design §6).
 
 Every queue has a fixed set of decisions. A decision needs a reviewer and a rationale, is stored
 as ``(:Reviewer)-[:DECIDED]->(:ReviewItem)`` and is recorded as a ``Review`` activity. Dirty tags
@@ -7,8 +7,6 @@ same decision, so no single person, and no agent, can make ``dirty`` current or 
 
 What a settled decision *does* is an effect. Tag effects are applied here; effects that belong to
 other layers (replay a file, extend the alias registry, open a case) are passed in by the caller.
-
-Implements: UND-050
 """
 
 import json
@@ -150,7 +148,7 @@ async def list_items(
 
 
 async def queue_stats(runner: CypherRunner) -> list[dict[str, Any]]:
-    """Counts and oldest age per queue: all a notification may carry (plan §6: no content)."""
+    """Counts and oldest age per queue: all a notification may carry (design §6: no content)."""
     return await runner.run(
         "MATCH (i:ReviewItem) WHERE i.state IN $states "
         "RETURN i.kind AS kind, count(i) AS open, min(i.created_at) AS oldest ORDER BY kind",

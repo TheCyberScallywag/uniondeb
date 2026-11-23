@@ -2,7 +2,6 @@
 
 - Status: accepted
 - Date: 2026-11-19
-- Step: UND-010
 
 ## Context
 
@@ -11,10 +10,10 @@ explainable later, to reviewers, auditors and the people affected.
 
 ## Decision
 
-Record significant decisions as ADRs in `docs/adr/`, numbered, each naming the backlog step it
-belongs to. Superseded ADRs stay in place, marked superseded.
+Record significant decisions as ADRs in `docs/adr/`, numbered. Superseded ADRs stay in place,
+marked superseded.
 
 ## Consequences
 
-Every ADR is traceable to a step, and through the step to its issue, branch, commits, code and tests
-(`TRACEABILITY.md`).
+Each ADR cites the evidence it rests on (a script, a results file, a document), and a test checks
+that the cited files exist.

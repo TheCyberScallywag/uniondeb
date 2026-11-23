@@ -1,7 +1,4 @@
-"""The roster and generators produce valid, coherent events.
-
-Verifies: UND-012
-"""
+"""The roster and generators produce valid, coherent events."""
 
 import json
 import random

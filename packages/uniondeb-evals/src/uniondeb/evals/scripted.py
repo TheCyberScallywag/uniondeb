@@ -4,9 +4,7 @@ The offline gate has to run on every pull request with no network and no model s
 to give the same answer every time. These models answer from a script, so what the gate measures
 is everything *around* the model: prompts carry no identities, outputs are validated, routing never
 lets a model result lower a tag, proposals reach four-eyes review. How good a real model's
-judgement is can only be measured against that model (``uniondeb evals run --model …``).
-
-Implements: UND-081
+judgement is can only be measured against that model (``uniondeb evals gate --model …``).
 """
 
 import csv

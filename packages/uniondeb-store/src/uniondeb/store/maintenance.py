@@ -8,8 +8,6 @@ kept the one structure that cannot be rebuilt.
 
 A backup contains everything, including record content, so it must be stored as the database is:
 encrypted, access-controlled, and inside the retention schedule.
-
-Implements: UND-092
 """
 
 import gzip

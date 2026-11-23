@@ -1,4 +1,4 @@
-// Implements: UND-013 — cases, flags, SARs and the hash-chained audit log (plan §7)
+// Cases, flags, SARs and the hash-chained audit log (design §7)
 CREATE CONSTRAINT case_id IF NOT EXISTS FOR (n:Case) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT flag_id IF NOT EXISTS FOR (n:Flag) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT case_note_id IF NOT EXISTS FOR (n:CaseNote) REQUIRE n.id IS UNIQUE;

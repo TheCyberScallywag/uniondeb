@@ -1,7 +1,4 @@
-"""Journaled email contract: RFC 5322 and Microsoft Graph shapes, journal semantics.
-
-Verifies: UND-011
-"""
+"""Journaled email contract: RFC 5322 and Microsoft Graph shapes, journal semantics."""
 
 import pytest
 from pydantic import ValidationError

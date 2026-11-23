@@ -7,8 +7,6 @@ neither configured the application refuses to start. The browser UIs send the sa
 
 Roles: ``uploader``, ``reviewer``, ``compliance``, ``compliance_lead``, ``investigator``,
 ``nominated_officer``, ``auditor``, ``case_admin`` and ``service`` (agents writing back).
-
-Implements: UND-020, UND-050, UND-070
 """
 
 import os

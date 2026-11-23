@@ -3,8 +3,6 @@
 The JSON API and the HTML pages both call these, so a rule enforced here holds for both. Every
 function that reads case material checks access through the case service (which audits refusals)
 and then writes its own audit event, so there is no way to look at a case without leaving a trace.
-
-Implements: UND-050, UND-062, UND-070, UND-075
 """
 
 import json
@@ -42,7 +40,7 @@ class RecordTagIn(BaseModel):
     label: str = Field(pattern="^(clean|question|dirty)$")
     rationale: str
     clauses: list[str] = Field(default_factory=list)
-    context: bool = False  # relevant to the case but not itself misconduct (plan §7.3)
+    context: bool = False  # relevant to the case but not itself misconduct (design §7.3)
 
 
 # ───────────────────────────── review console ───────────────────────────────────────
@@ -162,7 +160,7 @@ def _effects(s: Services, principal: Principal, body: DecisionIn) -> dict[str, r
             {"dismiss": "dismissed", "escalate_legal": "escalated_legal"}.get(decision),
             None,
         )
-        if decision == "open_case":  # the escalation path of plan §7.1: only after two reviewers agreed
+        if decision == "open_case":  # the escalation path of design §7.1: only after two reviewers agreed
             case = await s.cases.open_from_alert(alert_id, principal.actor, body.rationale)
             state, case_id = "case_opened", case.id
             act.generated(EntityRef(label="Case", key=case.id))
@@ -193,7 +191,7 @@ async def decide_item(s: Services, principal: Principal, item_id: str, body: Dec
 
 
 async def notification(s: Services) -> str:
-    """All a notification may say (plan §6): a count, no content, no names, no case details."""
+    """All a notification may say (design §6): a count, no content, no names, no case details."""
     n = sum(q["open"] for q in await review.queue_stats(s.runner))
     return f"{n} review item{'' if n == 1 else 's'} waiting"
 
@@ -220,6 +218,7 @@ async def reveal_alert_subject(s: Services, principal: Principal, alert_id: str,
 async def build_alert_pack(s: Services, principal: Principal, alert_id: str) -> crynhoi.CasePack:
     row = await _alert_subject(s, alert_id)
     a = row["a"]
+    await s.audit.append(principal.sub, "pack.build", target=f"Alert:{alert_id}")  # a pack holds record text
     return await crynhoi.build_pack(
         s.runner,
         s.tarddiad,
@@ -376,7 +375,7 @@ def _step(a: dict[str, Any]) -> dict[str, Any]:
 
 
 async def tag_record(s: Services, principal: Principal, case_id: str, key: str, body: RecordTagIn) -> str:
-    """An investigator's tag: human, current at once, superseding whatever was there (plan §7.3)."""
+    """An investigator's tag: human, current at once, superseding whatever was there (design §7.3)."""
     if not principal.roles & {"investigator", "nominated_officer"}:
         raise PermissionDenied("only an investigator or nominated officer tags records in a case")
     if not body.rationale.strip():

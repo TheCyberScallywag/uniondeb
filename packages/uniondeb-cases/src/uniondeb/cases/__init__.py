@@ -1,4 +1,4 @@
-"""Ymchwiliad's domain layer: cases, flags, the audit log and SAR reporting (plan §7).
+"""Ymchwiliad's domain layer: cases, flags, the audit log and SAR reporting (design §7).
 
 The services here are what the investigation portal's HTTP layer calls. They decide who may do
 what from the ``Actor`` they are given, write every action (reads included) to a hash-chained
@@ -9,8 +9,6 @@ why. Build them once per process, sharing one ``AuditLog``::
     cases = CaseService(runner, audit, Tarddiad(runner))
     flags = FlagService(runner, audit, cases)
     sars = SarService(runner, audit, cases, flags)
-
-Implements: UND-070, UND-071, UND-072, UND-074
 """
 
 from uniondeb.cases.audit import GENESIS, Anchor, AnchorCheck, AuditEvent, AuditLog, VerifyResult

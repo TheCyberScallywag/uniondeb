@@ -3,7 +3,7 @@
 Short procedures for the things that will go wrong. Each says how you find out, what to do first,
 and who must be told. They assume the compose stack in `deploy/`; adapt service names to the
 production platform. "The governance owner" and "the nominated officer" are the people named
-under backlog steps UND-005 and UND-001.
+under the governance gate (design §2).
 
 | Runbook | When |
 |---|---|

@@ -10,8 +10,6 @@
 
 ``COLUMNS`` below is the single column spec that the CSV and Parquet schemas and the
 flatten/unflatten functions are all generated from.
-
-Implements: UND-011
 """
 
 import json

@@ -1,7 +1,4 @@
-"""Generated events round-trip through the JSON, CSV and Parquet schemas.
-
-Verifies: UND-012
-"""
+"""Generated events round-trip through the JSON, CSV and Parquet schemas."""
 
 import csv
 import io

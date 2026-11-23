@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-# Uniondeb images. Implements: UND-013
+# Uniondeb images.
 # Build context is the repository root (see deploy/compose.yml):
-#   dev      the whole uv workspace with dev tools — pytest, ruff, scripts/traceability.py
+#   dev      the whole uv workspace with dev tools — pytest, ruff
 #   runtime  the `uniondeb` CLI only, no dev tools, non-root
 
 ARG UV_VERSION=0.12.19
@@ -17,7 +17,7 @@ WORKDIR /app
 
 
 FROM base AS dev
-# git: scripts/traceability.py reads the commit log of the bind-mounted checkout.
+# git: pre-commit and other tools read the bind-mounted checkout.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git \
     && rm -rf /var/lib/apt/lists/* \

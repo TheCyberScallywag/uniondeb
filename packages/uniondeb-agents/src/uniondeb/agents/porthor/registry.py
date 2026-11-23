@@ -4,8 +4,6 @@ The alias layer in ``uniondeb.core.resolve`` is code and covers the dialects kno
 written. When a source system names a column in a way it does not know, Porthor proposes a mapping,
 a reviewer approves it, and it lands here as registry version N+1. The registry only *renames*
 columns to names the contract already has: it cannot add a field or change a validation rule.
-
-Implements: UND-023
 """
 
 import json

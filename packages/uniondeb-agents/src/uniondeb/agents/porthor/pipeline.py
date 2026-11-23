@@ -1,4 +1,4 @@
-"""The deterministic ingest pipeline: detect, resolve, validate, dedupe, write (plan §5.1).
+"""The deterministic ingest pipeline: detect, resolve, validate, dedupe, write (design §5.1).
 
 No model is involved. Every row of an uploaded file ends in exactly one place:
 
@@ -10,8 +10,6 @@ No model is involved. Every row of an uploaded file ends in exactly one place:
 The counts on the ``SourceFile`` always add up to its row count, and ``ingest_file`` raises if they
 do not: a silent drop is a bug, not a data-quality outcome. Replaying a file (after a mapping is
 approved, say) is idempotent: rows that now pass close their earlier error.
-
-Implements: UND-021, UND-022
 """
 
 import hashlib

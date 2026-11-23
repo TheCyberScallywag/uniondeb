@@ -1,7 +1,4 @@
-"""Porthor: every row becomes a record or a review item, replay is idempotent, mappings need approval.
-
-Verifies: UND-021, UND-022, UND-023, UND-027
-"""
+"""Porthor: every row becomes a record or a review item, replay is idempotent, mappings need approval."""
 
 import csv
 import json

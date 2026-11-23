@@ -1,7 +1,4 @@
-"""Shared fixtures for uniondeb-store tests.
-
-Verifies: UND-013
-"""
+"""Shared fixtures for uniondeb-store tests."""
 
 import os
 

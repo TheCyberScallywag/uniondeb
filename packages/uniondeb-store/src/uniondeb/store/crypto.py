@@ -1,11 +1,9 @@
 """Field-level encryption for the few properties that hold raw, unvalidated input.
 
-A row that fails ingest is kept so a reviewer can fix it (plan §5.1), but it has not been through
+A row that fails ingest is kept so a reviewer can fix it (design §5.1), but it has not been through
 the contract, so nothing is known about what it contains. It is stored as a Fernet token, and only
 the review API holds the key (``UNIONDEB_FIELD_KEY``). There is no default key: a service that needs
 one and has none fails at start-up rather than writing plaintext.
-
-Implements: UND-022
 """
 
 import json

@@ -16,8 +16,6 @@ yields the *filler's* hash and size, not the declared ones.
 What survives render → parse: message_id, sender, to, cc, bcc (journal report only), subject,
 body text (minus trailing newlines), sent_at to the second, in_reply_to, attachment filenames and
 the journal source. ``device`` and ``journal.received_at`` are not part of a message on the wire.
-
-Implements: UND-025
 """
 
 import hashlib
